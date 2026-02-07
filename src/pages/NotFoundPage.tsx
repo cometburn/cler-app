@@ -1,7 +1,7 @@
 // Import images statically or put them in /public/404-1.png, etc.
 const images = ["/404-1.png", "/404-2.png", "/404-3.png"];
 
-export default function NotFound() {
+export const NotFoundPage = () => {
     const randomSrc = images[Math.floor(Math.random() * images.length)];
 
     return (
@@ -15,7 +15,7 @@ export default function NotFound() {
                     src={randomSrc}
                     className="w-auto mx-auto h-auto px-8 py-10 max-w-[500px]"
                 />
-                <p className="text-gray-500 mb-8">
+                <p className="text-gray-500 mb-8 text-sm">
                     The page you're looking for doesn't exist.
                 </p>
             </div>

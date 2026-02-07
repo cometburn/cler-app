@@ -148,7 +148,7 @@ export function LoginForm() {
           )}
         </div>
 
-        <footer className="mt-8 text-sm text-slate-500">
+        <footer className="mt-8 text-xs text-slate-300 text-center">
           ©2025 JCometa. All rights reserved.
         </footer>
       </CardContent>
