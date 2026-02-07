@@ -22,7 +22,7 @@ export default function AppSidebarHeader() {
   const { switchHotel } = useUser();
 
   const userHotels = user?.hotels || [];
-  const defaultHotelId = user?.default_hotel_id; // ← assuming this field exists on user
+  const defaultHotelId = user?.default_hotel_id;
   const defaultHotel = userHotels.find((h) => h.id === defaultHotelId);
 
   const [open, setOpen] = useState(false);

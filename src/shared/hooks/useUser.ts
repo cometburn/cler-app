@@ -1,11 +1,10 @@
-// src/shared/hooks/useUser.ts
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 
 import { fetchCurrentUser, setDefaultHotelApi } from "@/shared/api/user.api";
 
-import type { User } from "@/shared/types/user.types"; // adjust path if needed
-import type { Hotel } from "@/shared/types/hotel.types"; // adjust path if needed
+import type { User } from "@/shared/types/user.types";
+import type { Hotel } from "@/shared/types/hotel.types";
 
 export const USER_QUERY_KEY = ["currentUser"] as const;
 
@@ -40,20 +39,7 @@ export function useUser() {
             return hotelId;
         },
 
-        onSuccess: (newDefaultHotelId) => {
-            // Optimistic update: flip is_default flag in cache
-            // queryClient.setQueryData<User | null>(USER_QUERY_KEY, (oldUser) => {
-            //     if (!oldUser?.hotels) return oldUser;
-
-            //     return {
-            //         ...oldUser,
-            //         hotels: oldUser.hotels.map((hotel) => ({
-            //             ...hotel,
-            //             is_default: hotel.id === newDefaultHotelId,
-            //         })),
-            //     };
-            // });
-
+        onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: USER_QUERY_KEY });
         },
 
