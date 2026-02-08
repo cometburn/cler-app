@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createHashRouter } from "react-router-dom";
 import { ProtectedRoute } from "./protected.route";
 import { DashboardRoutes } from "./dashboard.route";
 import { AuthRoutes } from "./auth.route";
@@ -7,7 +7,7 @@ import { RoomPromoRoutes } from "./roomPromo.route";
 import { RoomTypeRoutes } from "./roomType.route";
 import { RoomRateRoutes } from "./roomRate.route";
 
-export const router = createBrowserRouter([
+export const router = createHashRouter([
   {
     path: "/",
     element: <AuthRoutes />,
@@ -16,19 +16,19 @@ export const router = createBrowserRouter([
     element: <ProtectedRoute />,
     children: [
       {
-        path: "/dashboard/*",
+        path: "dashboard/*",
         element: <DashboardRoutes />,
       },
       {
-        path: "/room-promos/*",
+        path: "room-promos/*",
         element: <RoomPromoRoutes />,
       },
       {
-        path: "/room-types/*",
+        path: "room-types/*",
         element: <RoomTypeRoutes />,
       },
       {
-        path: "/room-rates/*",
+        path: "room-rates/*",
         element: <RoomRateRoutes />,
       },
     ],
