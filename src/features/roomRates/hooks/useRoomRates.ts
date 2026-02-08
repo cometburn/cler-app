@@ -25,12 +25,12 @@ export function useCreateRoomRate() {
         mutationFn: createRoomRate,
 
         onSuccess: () => {
-            toast.success("Room promo created successfully");
+            toast.success("Room rate created successfully");
         },
 
         onError: (error) => {
-            console.error("Failed to create room promo:", error);
-            toast.error(error.message || "Failed to create room promo");
+            console.error("Failed to create room rate:", error);
+            toast.error(error.message || "Failed to create room rate");
         },
 
         onSettled: () => {
@@ -49,12 +49,12 @@ export function useUpdateRoomRate() {
         mutationFn: updateRoomRate,
 
         onSuccess: () => {
-            toast.success("Room promo updated successfully");
+            toast.success("Room rate updated successfully");
         },
 
         onError: (error) => {
-            console.error("Failed to create room promo:", error);
-            toast.error(error.message || "Failed to create room promo");
+            console.error("Failed to create room rate:", error);
+            toast.error(error.message || "Failed to create room rate");
         },
 
         onSettled: () => {
@@ -73,12 +73,12 @@ export function useDeleteRoomRate() {
         mutationFn: deleteRoomRate,
 
         onSuccess: () => {
-            toast.success("Room promo deleted successfully");
+            toast.success("Room rate deleted successfully");
         },
 
         onError: (error) => {
-            console.error("Failed to delete room promo:", error);
-            toast.error(error.message || "Failed to delete room promo");
+            console.error("Failed to delete room rate:", error);
+            toast.error(error.message || "Failed to delete room rate");
         },
 
         onSettled: () => {

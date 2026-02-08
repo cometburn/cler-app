@@ -42,12 +42,12 @@ export function useCreateRoomType() {
         mutationFn: createRoomType,
 
         onSuccess: () => {
-            toast.success("Room Type created successfully");
+            toast.success("Room type created successfully");
         },
 
         onError: (error) => {
-            console.error("Failed to create room Type:", error);
-            toast.error(error.message || "Failed to create room Type");
+            console.error("Failed to create room type:", error);
+            toast.error(error.message || "Failed to create room type");
         },
 
         onSettled: () => {
@@ -68,12 +68,12 @@ export function useUpdateRoomType() {
         mutationFn: updateRoomType,
 
         onSuccess: () => {
-            toast.success("Room Type updated successfully");
+            toast.success("Room type updated successfully");
         },
 
         onError: (error) => {
-            console.error("Failed to update room Type:", error);
-            toast.error(error.message || "Failed to update room Type");
+            console.error("Failed to update room type:", error);
+            toast.error(error.message || "Failed to update room type");
         },
 
         onSettled: () => {
@@ -94,12 +94,12 @@ export function useDeleteRoomType() {
         mutationFn: deleteRoomType,
 
         onSuccess: () => {
-            toast.success("Room Type deleted successfully");
+            toast.success("Room type deleted successfully");
         },
 
         onError: (error) => {
-            console.error("Failed to delete room Type:", error);
-            toast.error(error.message || "Failed to delete room Type");
+            console.error("Failed to delete room type:", error);
+            toast.error(error.message || "Failed to delete room type");
         },
 
         onSettled: () => {
