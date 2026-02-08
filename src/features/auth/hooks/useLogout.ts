@@ -9,6 +9,6 @@ export function useLogout() {
         localStorage.removeItem('token')
         queryClient.clear()           // clears all queries
         queryClient.setQueryData(['me'], null)
-        navigate('/login', { replace: true })
+        navigate('/', { replace: true })
     }
 }
