@@ -130,13 +130,3 @@
   color: hsl(135 70% 25%);
   border: hsl(135 60% 70%);
 }
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-
-  body {
-    @apply bg-background text-foreground;
-  }
-}
