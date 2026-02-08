@@ -125,7 +125,7 @@
 }
 
 /* Target success toasts */
-[data-sonner-toast][data-type="success"] {
+li[data-sonner-toast][data-type="success"] {
   background-color: hsl(135 60% 96%);
   color: hsl(135 70% 25%);
   border: hsl(135 60% 70%);
