@@ -10,17 +10,16 @@ const AUTH_ENDPOINTS = {
     LOGOUT: '/auth/logout',
 };
 
-export async function login(credentials: LoginCredentials): Promise<LoginResponse> {
-    return apiFetch<LoginResponse>(AUTH_ENDPOINTS.LOGIN, {
+export const login = async (credentials: LoginCredentials): Promise<LoginResponse> => {
+    return await apiFetch<LoginResponse>(AUTH_ENDPOINTS.LOGIN, {
         method: 'POST',
         body: JSON.stringify(credentials),
     })
 }
 
-export async function googleLogin(googleToken: string): Promise<LoginResponse> {
-    const res = await apiFetch<LoginResponse>(AUTH_ENDPOINTS.GOOGLE_LOGIN, {
+export const googleLogin = async (googleToken: string): Promise<LoginResponse> => {
+    return await apiFetch<LoginResponse>(AUTH_ENDPOINTS.GOOGLE_LOGIN, {
         method: "POST",
         body: JSON.stringify({ googleToken }),
     });
-    return res;
 }

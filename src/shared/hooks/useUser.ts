@@ -1,17 +1,16 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 
-import { fetchCurrentUser, setDefaultHotelApi } from "@/shared/api/user.api";
+import { fetchMe, setDefaultHotelApi } from "@/shared/api/user.api";
 
 import type { User } from "@/shared/types/user.types";
 import type { Hotel } from "@/shared/types/hotel.types";
 
-export const USER_QUERY_KEY = ["currentUser"] as const;
+export const USER_QUERY_KEY = ["me"] as const;
 
 export function useUser() {
     const queryClient = useQueryClient();
 
-    // Fetch current user
     const {
         data: user,
         isLoading: isUserLoading,
@@ -19,11 +18,10 @@ export function useUser() {
         refetch: refetchUser,
     } = useQuery<User | null, Error>({
         queryKey: USER_QUERY_KEY,
-        queryFn: fetchCurrentUser,
-        staleTime: 5 * 60 * 1000, // 5 minutes
+        queryFn: fetchMe,
+        staleTime: 5 * 60 * 1000,
         gcTime: 10 * 60 * 1000,
         retry: false,
-        // Only run query when user is likely authenticated
         enabled: !!localStorage.getItem("token"),
     });
 

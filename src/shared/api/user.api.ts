@@ -9,7 +9,7 @@ const USER_ENDPOINTS = {
 /**
  * Fetch the current authenticated user
  */
-export const fetchCurrentUser = (): Promise<User | null> => {
+export const fetchMe = (): Promise<User | null> => {
     return apiFetch<User>(USER_ENDPOINTS.CURRENT);
 }
 

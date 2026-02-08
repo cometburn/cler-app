@@ -9,14 +9,14 @@ export function useCreateHotel() {
     return useMutation<Hotel, Error, Hotel>({
         mutationFn: createHotel,
 
-        onSuccess: (newHotel) => {
-            // Optimistically add the new hotel to the user's hotels list
-            queryClient.setQueryData(["currentUser"], (oldUser: any) => {
+        onSuccess: async (newHotel) => {
+            queryClient.setQueryData(["me"], (oldUser: any) => {
                 if (!oldUser) return oldUser;
 
                 return {
                     ...oldUser,
                     hotels: [...(oldUser.hotels || []), newHotel],
+                    default_hotel_id: newHotel.id,
                 };
             });
 
@@ -28,9 +28,8 @@ export function useCreateHotel() {
             toast.error(error.message || "Failed to create hotel");
         },
 
-        // Optional: refetch to sync with backend if optimistic update might be incomplete
-        // onSettled: () => {
-        //   queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-        // },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ["me"] });
+        },
     });
 }

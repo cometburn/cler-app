@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { useUser } from "@/shared/hooks/useUser";
 
-export const DashboardComponent = () => {
+export const Dashboard = () => {
   const { user, defaultHotelId, isLoading, error } = useUser();
 
   if (isLoading) {
@@ -28,7 +28,7 @@ export const DashboardComponent = () => {
               className={cn(
                 "p-3 rounded border",
                 hotel.id === defaultHotelId
-                  ? "border-primary bg-primary/5 font-medium"
+                  ? " bg-primary/5 font-medium"
                   : "border-border"
               )}
             >

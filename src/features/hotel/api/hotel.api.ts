@@ -6,8 +6,8 @@ const HOTEL_ENDPOINTS = {
     CREATE: '/hotels',
 };
 
-export async function createHotel(data: Hotel): Promise<Hotel> {
-    return apiFetch<Hotel>(HOTEL_ENDPOINTS.CREATE, {
+export const createHotel = async (data: Hotel): Promise<Hotel> => {
+    return await apiFetch<Hotel>(HOTEL_ENDPOINTS.CREATE, {
         method: 'POST',
         body: JSON.stringify(data),
     })
