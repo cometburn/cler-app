@@ -49,7 +49,7 @@ export function useUpdateRoomRate() {
         mutationFn: updateRoomRate,
 
         onSuccess: () => {
-            toast.success("Room promo created successfully");
+            toast.success("Room promo updated successfully");
         },
 
         onError: (error) => {
