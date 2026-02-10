@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const roomTypeSchema = z.object({
     id: z.number().optional(),
-    name: z.string(),
+    name: z.string().min(1, "Room type is required"),
     description: z.string().optional(),
 });
 
