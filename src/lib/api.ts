@@ -17,8 +17,9 @@ export async function apiFetch<T = unknown>(
     endpoint: string,
     options: RequestInit = {},
 ): Promise<T> {
+    const token = localStorage.getItem("token");
+
     const getHeaders = () => {
-        const token = localStorage.getItem("token");
         return {
             "Content-Type": "application/json",
             ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -33,7 +34,7 @@ export async function apiFetch<T = unknown>(
     });
 
     // Handle 401 → token refresh
-    if (response.status === 401) {
+    if (response.status === 401 && token) {
         const originalRequest = { ...options, endpoint };
 
         if (!isRefreshing) {
@@ -89,10 +90,6 @@ export async function apiFetch<T = unknown>(
             // ignore json parse error
         }
 
-        toast.error(message, {
-            className: "!bg-red-50 !text-red-600 !border-none dark:!bg-red-950 dark:!text-red-400",
-        });
-
         throw new Error(message);
     }
 
@@ -102,7 +99,7 @@ export async function apiFetch<T = unknown>(
         return response.json() as Promise<T>;
     }
 
-    return {} as T; // or handle other response types if needed
+    return {} as T;
 }
 
 // Optional: shorthand helpers

@@ -130,3 +130,10 @@ li[data-sonner-toast][data-type="success"] {
   color: hsl(135 70% 25%);
   border: hsl(135 60% 70%);
 }
+
+/* Target error toasts */
+li[data-sonner-toast][data-type="error"] {
+  background-color: hsl(0 60% 96%);
+  color: hsl(357, 96%, 58%);
+  border: hsl(0 60% 70%);
+}

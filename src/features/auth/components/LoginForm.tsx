@@ -42,8 +42,8 @@ export function LoginForm() {
     },
   })
 
-  const onSubmit = (values: LoginFormValues) => {
-    login(values)
+  const onSubmit = async (values: LoginFormValues) => {
+    await login(values)
   }
 
   return (
