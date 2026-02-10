@@ -101,7 +101,7 @@ export const RoomTypeDialog = ({
                             name="name"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Name</FormLabel>
+                                    <FormLabel>Type</FormLabel>
                                     <FormControl>
                                         <Input placeholder="Enter room type name" {...field} />
                                     </FormControl>
