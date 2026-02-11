@@ -6,6 +6,8 @@ import { NotFoundPage } from "@/pages/NotFoundPage";
 import { RoomPromoRoutes } from "./roomPromo.route";
 import { RoomTypeRoutes } from "./roomType.route";
 import { RoomRateRoutes } from "./roomRate.route";
+import { RoomRoutes } from "./room.route";
+import { DefaultLayout } from "@/layouts/DefaultLayout";
 
 export const router = createHashRouter([
   {
@@ -16,21 +18,30 @@ export const router = createHashRouter([
     element: <ProtectedRoute />,
     children: [
       {
-        path: "dashboard/*",
-        element: <DashboardRoutes />,
-      },
-      {
-        path: "room-promos/*",
-        element: <RoomPromoRoutes />,
-      },
-      {
-        path: "room-types/*",
-        element: <RoomTypeRoutes />,
-      },
-      {
-        path: "room-rates/*",
-        element: <RoomRateRoutes />,
-      },
+        element: <DefaultLayout />,
+        children: [
+          {
+            path: "dashboard/*",
+            element: <DashboardRoutes />,
+          },
+          {
+            path: "rooms/*",
+            element: <RoomRoutes />,
+          },
+          {
+            path: "room-promos/*",
+            element: <RoomPromoRoutes />,
+          },
+          {
+            path: "room-types/*",
+            element: <RoomTypeRoutes />,
+          },
+          {
+            path: "room-rates/*",
+            element: <RoomRateRoutes />,
+          },
+        ]
+      }
     ],
   },
   {

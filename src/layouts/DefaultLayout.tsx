@@ -25,7 +25,7 @@ const init = () => {
   return localStorage.getItem("sidebarOpen") ? localStorage.getItem("sidebarOpen") === "true" : sidebarOpenInitialState;
 }
 
-export default function DefaultLayout() {
+export const DefaultLayout = () => {
   const { data: user, isLoading: isUserLoading } = useMe();
   const location = useLocation();
   const [pageTitle, setPageTitle] = useState("Dashboard");
