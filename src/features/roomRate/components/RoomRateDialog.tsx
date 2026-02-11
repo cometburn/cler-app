@@ -29,11 +29,11 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 
-import { RoomRate, RoomRateForm, roomRateSchema } from "@/features/roomRates/types/roomRate.types";
+import { RoomRate, RoomRateForm, roomRateSchema } from "@/features/roomRate/types/roomRate.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { rateTypeOptions } from "@/constants/system";
-import { useRoomTypes } from "@/features/roomTypes/hooks/useRoomTypes";
+import { useRoomTypes } from "@/features/roomType/hooks/useRoomTypes";
 
 
 interface RoomRateDialogProps {
