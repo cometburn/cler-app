@@ -6,12 +6,8 @@ export const roomPromoSchema = z.object({
     room_rate_id: z.number({
         message: "Room rate is required",
     }),
-    date_start: z.coerce.date({
-        message: "Start date is required",
-    }).refine((data) => data > new Date(), { message: "Start date must be greater than End date" }),
-    date_end: z.coerce.date({
-        message: "End date is required",
-    }),
+    date_start: z.string().min(1, "Start date is required"),
+    date_end: z.string().min(1, "End date is required"),
     days_of_week: z.string().min(1, "At least one day must be selected"),
     time_start: z.string().min(1, "Time start is required"),
     time_end: z.string().min(1, "Time end is required"),
@@ -19,7 +15,19 @@ export const roomPromoSchema = z.object({
 
     note: z.string(),
     extra_person_rate: z.number(),
-});
+}).refine(
+    (data) => {
+        const start = new Date(data.date_start);
+        const end = new Date(data.date_end);
+        if (isNaN(start.getTime()) || isNaN(end.getTime())) return true;
+
+        return start <= end;
+    },
+    {
+        message: "Start date must not be greater than end date",
+        path: ["date_start"],
+    }
+);;
 
 export type RoomPromo = z.infer<typeof roomPromoSchema>;
 
