@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import {
+    Cell,
     flexRender,
     getCoreRowModel,
+    Row,
     useReactTable,
 } from "@tanstack/react-table";
 import {
@@ -29,6 +31,7 @@ import {
 } from "../hooks/useRoomPromos";
 import { roomPromoSchema } from "../types/roomPromo.types";
 import { RoomPromo } from "../types/roomPromo.types";
+import { days } from "@/constants/system";
 
 export const RoomPromoTable = () => {
     const [page, setPage] = useState(1);
@@ -44,7 +47,7 @@ export const RoomPromoTable = () => {
         data: data?.data ?? [],
         columns: [
             { accessorKey: "name", header: "Name" },
-            { accessorKey: "rate_type", header: "Type" },
+            { accessorKey: "room_rate.name", header: "Type" },
             { accessorKey: "date_start", header: "Start Date" },
             { accessorKey: "date_end", header: "End Date" },
             { accessorKey: "days_of_week", header: "Days of Week" },
@@ -60,6 +63,60 @@ export const RoomPromoTable = () => {
         },
         getCoreRowModel: getCoreRowModel(),
     });
+
+    const renderCellContent = (index: number, row: Row<RoomPromo>, cell: Cell<RoomPromo, unknown>) => {
+        switch (true) {
+            case index === 8:
+                return (
+                    <>
+                        <ConfirmDeleteDialog
+                            entityName={`${row.original.name} - Room Promo`}
+                            loading={deleteMutation.isPending}
+                            onConfirm={() => deleteMutation.mutate(row.original.id!)}
+                        />
+                        <RoomPromoDialog
+                            mode="edit"
+                            initialData={row.original}
+                            onSubmit={(data: RoomPromo) => {
+                                updateMutation.mutate(roomPromoSchema.parse(data));
+                            }}
+                            trigger={
+                                <Button variant="ghost" className="size-7 cursor-pointer float-right">
+                                    <Pencil className="w-4 h-4" />
+                                </Button>
+                            }
+                        />
+                    </>
+                );
+
+            case cell.column.id === "days_of_week":
+                const arr = cell.getValue() as number[]
+                const allDays = days.map(d => d.value);
+                const weekdays = [1, 2, 3, 4, 5];
+                const weekends = [0, 6];
+
+                // All Days
+                if (arr.length === 7 && allDays.every(d => arr.includes(d))) return "All Days";
+
+                // Weekdays
+                if (arr.length === 5 && weekdays.every(d => arr.includes(d))) return "Weekdays";
+
+                // Weekends
+                if (arr.length === 2 && weekends.every(d => arr.includes(d))) return "Weekends";
+
+                // Otherwise, list individual day labels
+                return days
+                    .filter(d => arr.includes(d.value))
+                    .map(d => d.label)
+                    .join(", ");
+
+            case cell.column.id === "date_start" || cell.column.id === "date_end":
+                return formatDateMMDDYYYY(cell.getValue() as string);
+
+            default:
+                return flexRender(cell.column.columnDef.cell, cell.getContext());
+        }
+    };
 
     return (
         <div className="md:max-w-7xl mx-auto">
@@ -102,37 +159,7 @@ export const RoomPromoTable = () => {
                             <TableRow key={row.id}>
                                 {row.getVisibleCells().map((cell, index) => (
                                     <TableCell key={cell.id} className="capitalize">
-                                        {index === 8 ? (
-                                            <>
-                                                <ConfirmDeleteDialog
-                                                    entityName={`${row.original.name} - Room Promo`}
-                                                    loading={deleteMutation.isPending}
-                                                    onConfirm={() =>
-                                                        deleteMutation.mutate(row.original.id!)
-                                                    }
-                                                />
-                                                <RoomPromoDialog
-                                                    mode="edit"
-                                                    initialData={row.original}
-                                                    onSubmit={(data: RoomPromo) => {
-                                                        updateMutation.mutate(roomPromoSchema.parse(data));
-                                                    }}
-                                                    trigger={
-                                                        <Button variant="ghost" className="size-7 cursor-pointer float-right">
-                                                            <Pencil className="w-4 h-4" />
-                                                        </Button>
-                                                    }
-                                                />
-                                            </>
-                                        ) : cell.column.id === "date_start" ||
-                                            cell.column.id === "date_end" ? (
-                                            formatDateMMDDYYYY(cell.getValue() as string)
-                                        ) : (
-                                            flexRender(
-                                                cell.column.columnDef.cell,
-                                                cell.getContext()
-                                            )
-                                        )}
+                                        {renderCellContent(index, row, cell)}
                                     </TableCell>
                                 ))}
                             </TableRow>
