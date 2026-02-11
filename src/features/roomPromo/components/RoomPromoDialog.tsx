@@ -77,7 +77,7 @@ export const RoomPromoDialog = ({
       rate_type: '',
       date_start: '',
       date_end: '',
-      days_of_week: '',
+      days_of_week: [],
       time_start: "00:00",
       time_end: "23:59",
       price: 0,
@@ -104,7 +104,6 @@ export const RoomPromoDialog = ({
 
   const handleSubmit = async (values: RoomPromo) => {
     const { date_start, date_end, ...rest } = values;
-
     const payload = {
       ...rest,
       ...(date_start != null ? { date_start } : {}),
@@ -318,7 +317,6 @@ export const RoomPromoDialog = ({
               control={form.control}
               name="days_of_week"
               render={({ field }) => {
-                // Parse comma-separated string to array of numbers
                 const selectedDays: number[] = field.value
                   ? String(field.value).split(',').map(Number).filter(n => !isNaN(n))
                   : [];
@@ -344,7 +342,7 @@ export const RoomPromoDialog = ({
                                   ? [...selectedDays, value]
                                   : selectedDays.filter((d) => d !== value);
                                 // Convert array back to comma-separated string
-                                field.onChange(updated.join(','));
+                                field.onChange(updated);
                               }}
                               className="
                                 data-[state=checked]:bg-green-500

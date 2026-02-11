@@ -8,7 +8,7 @@ export const roomPromoSchema = z.object({
     }),
     date_start: z.string().min(1, "Start date is required"),
     date_end: z.string().min(1, "End date is required"),
-    days_of_week: z.string().min(1, "At least one day must be selected"),
+    days_of_week: z.array(z.number()).min(1, "At least one day must be selected"),
     time_start: z.string().min(1, "Time start is required"),
     time_end: z.string().min(1, "Time end is required"),
     price: z.number().min(1, "Price is required"),
