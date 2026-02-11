@@ -1,6 +1,6 @@
 "use client";
 
-import { RoomTypeTable } from "@/features/roomTypes/components/RoomTypeTable";
+import { RoomTypeTable } from "@/features/roomType/components/RoomTypeTable";
 
 export const RoomTypesPage = () => {
     return <RoomTypeTable />;

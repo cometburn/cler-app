@@ -45,11 +45,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { RoomPromo, roomPromoSchema } from "../types/roomPromo.types";
 
-import { useRoomRates } from "@/features/roomRates/hooks/useRoomRates";
+import { useRoomRates } from "@/features/roomRate/hooks/useRoomRates";
 
 import { days } from "@/constants/system";
 import { formatDateMMDDYYYY } from "@/helpers/date.helper";
-import { RoomRate } from "@/features/roomRates/types/roomRate.types";
+import { RoomRate } from "@/features/roomRate/types/roomRate.types";
 
 
 interface RoomPromoDialogProps {
@@ -73,7 +73,7 @@ export const RoomPromoDialog = ({
   const defaultValues = useMemo<RoomPromo>(
     () => ({
       name: "",
-      room_rate_id: undefined,
+      room_rate_id: 0,
       rate_type: '',
       date_start: '',
       date_end: '',
@@ -318,7 +318,11 @@ export const RoomPromoDialog = ({
               control={form.control}
               name="days_of_week"
               render={({ field }) => {
-                const selectedDays = ((field.value ?? []) as unknown) as number[];
+                // Parse comma-separated string to array of numbers
+                const selectedDays: number[] = field.value
+                  ? String(field.value).split(',').map(Number).filter(n => !isNaN(n))
+                  : [];
+
                 return (
                   <FormItem className="py-2">
                     <FormLabel>Days of Week</FormLabel>
@@ -339,7 +343,8 @@ export const RoomPromoDialog = ({
                                 const updated = checked
                                   ? [...selectedDays, value]
                                   : selectedDays.filter((d) => d !== value);
-                                field.onChange(updated);
+                                // Convert array back to comma-separated string
+                                field.onChange(updated.join(','));
                               }}
                               className="
                                 data-[state=checked]:bg-green-500
