@@ -83,3 +83,5 @@ export const days = [
 ];
 
 export const dateFormat = "mm/dd/yyyy";
+
+export const operationalStatus = ["available", "maintenance", "out of service"];
