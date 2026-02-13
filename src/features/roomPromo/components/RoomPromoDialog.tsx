@@ -50,6 +50,7 @@ import { useRoomRates } from "@/features/roomRate/hooks/useRoomRates";
 import { days } from "@/constants/system";
 import { formatDateMMDDYYYY } from "@/helpers/date.helper";
 import { RoomRate } from "@/features/roomRate/types/roomRate.types";
+import { ApiError } from "@/shared/types/apiError.types";
 
 
 interface RoomPromoDialogProps {
@@ -70,16 +71,15 @@ export const RoomPromoDialog = ({
   const { data } = useRoomRates(1, 100);
   const roomRates = data?.data ?? [];
 
-  const defaultValues = useMemo<RoomPromo>(
+  const defaultValues = useMemo<Partial<RoomPromo>>(
     () => ({
       name: "",
       room_rate_id: 0,
-      rate_type: '',
-      date_start: '',
-      date_end: '',
+      date_start: undefined,
+      date_end: undefined,
       days_of_week: [],
-      time_start: "00:00",
-      time_end: "23:59",
+      start_time: "00:00",
+      end_time: "23:59",
       price: 0,
       note: "",
       extra_person_rate: 0,
@@ -97,22 +97,51 @@ export const RoomPromoDialog = ({
   useEffect(() => {
     if (!open) return;
 
-    form.reset(
-      initialData ? { ...defaultValues, ...initialData } : defaultValues
-    );
+    if (initialData) {
+      form.reset({
+        ...defaultValues,
+        ...initialData,
+        date_start: initialData.date_start
+          ? new Date(initialData.date_start)
+          : undefined,
+        date_end: initialData.date_end
+          ? new Date(initialData.date_end)
+          : undefined,
+      });
+    } else {
+      form.reset(defaultValues);
+    }
   }, [open, initialData, form, defaultValues]);
 
   const handleSubmit = async (values: RoomPromo) => {
-    const { date_start, date_end, ...rest } = values;
-    const payload = {
-      ...rest,
-      ...(date_start != null ? { date_start } : {}),
-      ...(date_end != null ? { date_end } : {}),
-    };
+    try {
+      const { date_start, date_end, ...rest } = values;
+      const payload = {
+        ...rest,
+        ...(date_start != null ? { date_start } : {}),
+        ...(date_end != null ? { date_end } : {}),
+      };
 
-    await onSubmit(payload as RoomPromo);
-    setOpen(false);
-    form.reset(defaultValues);
+      await onSubmit(payload as RoomPromo);
+      setOpen(false);
+      form.reset(defaultValues);
+
+    } catch (error: unknown) {
+      const errors = (error as ApiError).response?.data?.errors;
+
+      if (errors && Array.isArray(errors)) {
+        errors.forEach((err: any) => {
+          if (err.path && err.path.length > 0) {
+            const fieldPath = err.path[0] as keyof RoomPromo;
+
+            form.setError(fieldPath, {
+              type: "manual",
+              message: err.message,
+            });
+          }
+        });
+      }
+    }
   };
 
   return (
@@ -203,13 +232,11 @@ export const RoomPromoDialog = ({
                 control={form.control}
                 name="date_start"
                 render={({ field }) => {
-                  const rawValue = field.value as Date | string | null | undefined;
+                  const rawValue = field.value as Date | undefined;
                   const value: Date | undefined =
-                    rawValue instanceof Date
+                    rawValue
                       ? rawValue
-                      : rawValue
-                        ? new Date(rawValue)
-                        : undefined;
+                      : undefined;
 
                   return (
                     <FormItem>
@@ -231,7 +258,7 @@ export const RoomPromoDialog = ({
                             <Calendar
                               mode="single"
                               selected={value}
-                              onSelect={(date) => field.onChange(date ?? null)}
+                              onSelect={(date) => field.onChange(date ?? undefined)}
                               className="bg-white"
                             />
                             <Button
@@ -259,13 +286,11 @@ export const RoomPromoDialog = ({
                 control={form.control}
                 name="date_end"
                 render={({ field }) => {
-                  const rawValue = field.value as Date | string | null | undefined;
+                  const rawValue = field.value as Date | undefined;
                   const value: Date | undefined =
-                    rawValue instanceof Date
+                    rawValue
                       ? rawValue
-                      : rawValue
-                        ? new Date(rawValue)
-                        : undefined;
+                      : undefined;
 
                   return (
                     <FormItem>
@@ -286,8 +311,8 @@ export const RoomPromoDialog = ({
                           <PopoverContent className="w-auto p-0 bg-white shadow-xl rounded-md border border-gray-200">
                             <Calendar
                               mode="single"
-                              selected={value}
-                              onSelect={(date) => field.onChange(date ?? null)}
+                              selected={value as Date}
+                              onSelect={(date) => field.onChange(date ?? undefined)}
                               className="bg-white"
                             />
                             <Button
@@ -317,8 +342,8 @@ export const RoomPromoDialog = ({
               control={form.control}
               name="days_of_week"
               render={({ field }) => {
-                const selectedDays: number[] = field.value
-                  ? String(field.value).split(',').map(Number).filter(n => !isNaN(n))
+                const selectedDays: number[] = Array.isArray(field.value)
+                  ? field.value
                   : [];
 
                 return (
@@ -341,7 +366,7 @@ export const RoomPromoDialog = ({
                                 const updated = checked
                                   ? [...selectedDays, value]
                                   : selectedDays.filter((d) => d !== value);
-                                // Convert array back to comma-separated string
+
                                 field.onChange(updated);
                               }}
                               className="
@@ -370,7 +395,7 @@ export const RoomPromoDialog = ({
             <div className="grid grid-cols-2 gap-3">
               <FormField
                 control={form.control}
-                name="time_start"
+                name="start_time"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Start Time</FormLabel>
@@ -384,7 +409,7 @@ export const RoomPromoDialog = ({
 
               <FormField
                 control={form.control}
-                name="time_end"
+                name="end_time"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>End Time</FormLabel>

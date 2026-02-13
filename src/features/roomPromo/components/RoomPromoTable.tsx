@@ -51,8 +51,8 @@ export const RoomPromoTable = () => {
             { accessorKey: "date_start", header: "Start Date" },
             { accessorKey: "date_end", header: "End Date" },
             { accessorKey: "days_of_week", header: "Days of Week" },
-            { accessorKey: "time_start", header: "Start Time" },
-            { accessorKey: "time_end", header: "End Time" },
+            { accessorKey: "start_time", header: "Start Time" },
+            { accessorKey: "end_time", header: "End Time" },
             { accessorKey: "price", header: "Price" },
             { accessorKey: "action", header: "" },
         ],
@@ -72,13 +72,13 @@ export const RoomPromoTable = () => {
                         <ConfirmDeleteDialog
                             entityName={`${row.original.name} - Room Promo`}
                             loading={deleteMutation.isPending}
-                            onConfirm={() => deleteMutation.mutate(row.original.id!)}
+                            onConfirm={async () => await deleteMutation.mutate(row.original.id!)}
                         />
                         <RoomPromoDialog
                             mode="edit"
                             initialData={row.original}
-                            onSubmit={(data: RoomPromo) => {
-                                updateMutation.mutate(roomPromoSchema.parse(data));
+                            onSubmit={async (data: RoomPromo) => {
+                                await updateMutation.mutateAsync(roomPromoSchema.parse(data));
                             }}
                             trigger={
                                 <Button variant="ghost" className="size-7 cursor-pointer float-right">
@@ -136,8 +136,8 @@ export const RoomPromoTable = () => {
                                     <TableHead key={header.id}>
                                         <RoomPromoDialog
                                             mode="add"
-                                            onSubmit={(data: RoomPromo) => {
-                                                createMutation.mutate(roomPromoSchema.parse(data));
+                                            onSubmit={async (data: RoomPromo) => {
+                                                await createMutation.mutateAsync(roomPromoSchema.parse(data));
                                             }}
                                         />
                                     </TableHead>

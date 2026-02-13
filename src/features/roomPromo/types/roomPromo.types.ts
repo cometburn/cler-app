@@ -3,25 +3,19 @@ import { z } from "zod";
 export const roomPromoSchema = z.object({
     id: z.number().optional(),
     name: z.string().min(1, "Promo name is required"),
-    room_rate_id: z.number({
-        message: "Room rate is required",
-    }),
-    date_start: z.string().min(1, "Start date is required"),
-    date_end: z.string().min(1, "End date is required"),
+    room_rate_id: z.number().min(1, "Room rate is required"),
+    date_start: z.date({ message: "Start date is required" }),
+    date_end: z.date({ message: "End date is required" }),
     days_of_week: z.array(z.number()).min(1, "At least one day must be selected"),
-    time_start: z.string().min(1, "Time start is required"),
-    time_end: z.string().min(1, "Time end is required"),
+    start_time: z.string().min(1, "Time start is required"),
+    end_time: z.string().min(1, "Time end is required"),
     price: z.number().min(1, "Price is required"),
 
     note: z.string(),
     extra_person_rate: z.number(),
 }).refine(
     (data) => {
-        const start = new Date(data.date_start);
-        const end = new Date(data.date_end);
-        if (isNaN(start.getTime()) || isNaN(end.getTime())) return true;
-
-        return start <= end;
+        return data.date_start <= data.date_end;
     },
     {
         message: "Start date must not be greater than end date",

@@ -13,6 +13,7 @@ import {
 } from "../api/roomPromo.api";
 
 import type { RoomPromo, RoomPromoResponse } from "../types/roomPromo.types";
+import { ApiError } from "@/shared/types/apiError.types";
 
 /* ================================
    Query Keys
@@ -39,7 +40,7 @@ export function useRoomPromos(page: number, limit: number) {
 export function useCreateRoomPromo() {
     const queryClient = useQueryClient();
 
-    return useMutation<RoomPromo, Error, RoomPromo>({
+    return useMutation<RoomPromo, ApiError, RoomPromo>({
         mutationFn: createRoomPromo,
 
         onSuccess: () => {
@@ -47,8 +48,12 @@ export function useCreateRoomPromo() {
         },
 
         onError: (error) => {
-            console.error("Failed to create room promo:", error);
-            toast.error(error.message || "Failed to create room promo");
+            const errors = error.response?.data?.errors;
+
+            if (!errors || !Array.isArray(errors) || !errors.some(err => err.path && err.path.length > 0)) {
+                const message = errors?.[0]?.message || error.message || "Failed to create room promo";
+                toast.error(message);
+            }
         },
 
         onSettled: () => {
@@ -65,7 +70,7 @@ export function useCreateRoomPromo() {
 export function useUpdateRoomPromo() {
     const queryClient = useQueryClient();
 
-    return useMutation<RoomPromo, Error, RoomPromo>({
+    return useMutation<RoomPromo, ApiError, RoomPromo>({
         mutationFn: updateRoomPromo,
 
         onSuccess: () => {
@@ -73,8 +78,12 @@ export function useUpdateRoomPromo() {
         },
 
         onError: (error) => {
-            console.error("Failed to update room promo:", error);
-            toast.error(error.message || "Failed to update room promo");
+            const errors = error.response?.data?.errors;
+
+            if (!errors || !Array.isArray(errors) || !errors.some(err => err.path && err.path.length > 0)) {
+                const message = errors?.[0]?.message || error.message || "Failed to update room promo";
+                toast.error(message);
+            }
         },
 
         onSettled: () => {
