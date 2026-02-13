@@ -23,12 +23,19 @@ import { menuItems, settingItems, userSettingItems } from "@/constants/system";
 import type { SidebarMenuItem as SidebarMenuItemType } from "@/shared/types/ui.types";
 import { useMe } from "@/features/auth/hooks/useMe";
 import { useLogout } from "@/features/auth/hooks/useLogout";
+import { useEffect, useState } from "react";
 
-function SidebarLink({ item }: { item: SidebarMenuItemType }) {
+function SidebarLink({ isSubMenuItem, item, urlLink, setUrlLink }: { isSubMenuItem?: boolean, item: SidebarMenuItemType, urlLink: string, setUrlLink: (url: string) => void }) {
   return (
     <Link
       to={item.url}
-      className="flex items-center gap-2 px-2 py-1 hover:bg-gray-700 rounded"
+      className={
+        [
+          isSubMenuItem && "flex items-center gap-2 px-2 py-1 hover:bg-gray-700 rounded",
+          urlLink === item.url && "bg-gray-700"
+        ].filter(Boolean).join(" ")
+      }
+      onClick={() => setUrlLink(item.url)}
     >
       <span>{item.title}</span>
     </Link>
@@ -36,11 +43,16 @@ function SidebarLink({ item }: { item: SidebarMenuItemType }) {
 }
 
 export const AppSidebar = () => {
+  const [urlLink, setUrlLink] = useState("");
   const logout = useLogout();
   const { data: user } = useMe();
 
   const isAdmin = user?.user_type_id === 2;
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setUrlLink(window.location.hash.split("#")[1]);
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -62,9 +74,13 @@ export const AppSidebar = () => {
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
                       asChild
-                      className="hover:bg-gray-800 text-white hover:text-white"
+                      className="active:bg-transparent active:text-white active:bg-gray-700 hover:bg-gray-700 hover:text-white text-white"
                     >
-                      <Link to={item.url}>
+                      <Link
+                        to={item.url}
+                        className={urlLink === item.url ? "bg-gray-700" : ""}
+                        onClick={() => setUrlLink(item.url)}
+                      >
                         <item.icon />
                         <span>{item.title}</span>
                       </Link>
@@ -89,7 +105,7 @@ export const AppSidebar = () => {
                           {settingItems.map((item) => (
                             <SidebarMenuItem key={item.title} className="">
                               <SidebarMenuButton asChild className="py-1">
-                                <SidebarLink item={item} />
+                                <SidebarLink isSubMenuItem={true} item={item} urlLink={urlLink} setUrlLink={setUrlLink} />
                               </SidebarMenuButton>
                             </SidebarMenuItem>
                           ))}
@@ -97,7 +113,7 @@ export const AppSidebar = () => {
                           {userSettingItems.map((item) => (
                             <SidebarMenuItem key={item.title} className="">
                               <SidebarMenuButton asChild className="py-1">
-                                <SidebarLink item={item} />
+                                <SidebarLink isSubMenuItem={true} item={item} urlLink={urlLink} setUrlLink={setUrlLink} />
                               </SidebarMenuButton>
                             </SidebarMenuItem>
                           ))}
