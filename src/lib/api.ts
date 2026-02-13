@@ -24,12 +24,18 @@ const processQueue = (error: any = null, newToken: string | null = null) => {
 
 class ApiError extends Error {
     status: number;
-    data?: any;
+    response?: {
+        status: number;
+        data: any;
+    };
 
     constructor(message: string, status: number, data?: any) {
         super(message);
         this.status = status;
-        this.data = data;
+        this.response = {
+            status,
+            data
+        };
         this.name = 'ApiError';
     }
 }
@@ -124,7 +130,13 @@ export async function apiFetch<T = unknown>(
 
         try {
             errorData = await response.json();
-            message = errorData.message || errorData.error || message;
+
+            // Handle new error format with errors array
+            if (errorData.errors && Array.isArray(errorData.errors)) {
+                message = errorData.errors[0]?.message || message;
+            } else {
+                message = errorData.message || errorData.error || message;
+            }
         } catch {
             // If json parse fails, use status text
             message = response.statusText || message;
