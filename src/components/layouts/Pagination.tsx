@@ -8,7 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Table } from "@tanstack/react-table";
-import { rowPerPage } from "@/constants/system";
+import { ROWS_PER_PAGE } from "@/constants/system";
 
 interface PaginationProps<TData> {
   table: Table<TData>;
@@ -74,7 +74,7 @@ export const Pagination = <TData,>({
               <SelectValue placeholder={String(pageSize)} />
             </SelectTrigger>
             <SelectContent>
-              {rowPerPage.map((size) => (
+              {ROWS_PER_PAGE.map((size) => (
                 <SelectItem key={size} value={String(size)} className="text-xs">
                   {size}
                 </SelectItem>

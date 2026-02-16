@@ -19,7 +19,7 @@ import {
   CollapsibleTrigger,
 } from "@radix-ui/react-collapsible";
 import { Link, useNavigate } from "react-router-dom";
-import { menuItems, settingItems, userSettingItems } from "@/constants/system";
+import { MENU_ITEMS, SETTING_ITEMS, USER_SETTING_ITEMS } from "@/constants/system";
 import type { SidebarMenuItem as SidebarMenuItemType } from "@/shared/types/ui.types";
 import { useMe } from "@/features/auth/hooks/useMe";
 import { useLogout } from "@/features/auth/hooks/useLogout";
@@ -70,7 +70,7 @@ export const AppSidebar = () => {
           <SidebarGroup className="border-0 border-transparent">
             <SidebarGroupContent>
               <SidebarMenu>
-                {menuItems.map((item) => (
+                {MENU_ITEMS.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
                       asChild
@@ -102,7 +102,7 @@ export const AppSidebar = () => {
                       </CollapsibleTrigger>
                       <CollapsibleContent>
                         <SidebarMenuSub className="mr-0 text-white border-gray-700">
-                          {settingItems.map((item) => (
+                          {SETTING_ITEMS.map((item) => (
                             <SidebarMenuItem key={item.title} className="">
                               <SidebarMenuButton asChild className="py-1">
                                 <SidebarLink isSubMenuItem={true} item={item} urlLink={urlLink} setUrlLink={setUrlLink} />
@@ -110,7 +110,7 @@ export const AppSidebar = () => {
                             </SidebarMenuItem>
                           ))}
                           <SidebarSeparator className="m-0 bg-gray-700" />
-                          {userSettingItems.map((item) => (
+                          {USER_SETTING_ITEMS.map((item) => (
                             <SidebarMenuItem key={item.title} className="">
                               <SidebarMenuButton asChild className="py-1">
                                 <SidebarLink isSubMenuItem={true} item={item} urlLink={urlLink} setUrlLink={setUrlLink} />
