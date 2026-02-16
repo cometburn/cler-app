@@ -26,7 +26,6 @@ export function useRooms(page?: number, limit?: number) {
     return useQuery<RoomResponse, Error>({
         queryKey: [...ROOM_S_QUERY_KEY, page, limit],
         queryFn: () => {
-            console.log("Fetching rooms...")
             return fetchRooms(page, limit)
         },
         enabled: true,

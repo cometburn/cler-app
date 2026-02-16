@@ -11,7 +11,6 @@ import { BookingDialog } from "@/features/booking/components/BookingDialog";
 export const Dashboard = () => {
   const { user, defaultHotelId, isLoading, error } = useUser();
   const { data: dashboardRooms, isLoading: roomsLoading } = useDashboard();
-  // const rooms = dashboardRooms?.data ?? [];
 
   const [rooms, setRooms] = useState<DashboardRoom[]>([]);
   const [_socket, setSocket] = useState<Socket | null>(null);

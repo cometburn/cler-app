@@ -90,7 +90,7 @@ export const CreateHotelDialog = () => {
 
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit, (errors) => console.log(errors))}
+            onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-4 mt-2"
           >
             <FormField
