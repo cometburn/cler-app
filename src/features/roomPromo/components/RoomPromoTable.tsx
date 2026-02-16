@@ -21,7 +21,7 @@ import { Pagination } from "@/components/layouts/Pagination";
 import { Button } from "@/components/ui/button";
 import { ConfirmDeleteDialog } from "@/components/dialogs/ConfirmDeleteDialog";
 import { RoomPromoDialog } from "./RoomPromoDialog";
-import { formatDateMMDDYYYY } from "@/helpers/date.helper";
+import { formatDate } from "@/helpers/date.helper";
 
 import {
     useRoomPromos,
@@ -31,7 +31,7 @@ import {
 } from "../hooks/useRoomPromos";
 import { roomPromoSchema } from "../types/roomPromo.types";
 import { RoomPromo } from "../types/roomPromo.types";
-import { days } from "@/constants/system";
+import { DAYS } from "@/constants/system";
 
 export const RoomPromoTable = () => {
     const [page, setPage] = useState(1);
@@ -48,11 +48,9 @@ export const RoomPromoTable = () => {
         columns: [
             { accessorKey: "name", header: "Name" },
             { accessorKey: "room_rate.name", header: "Type" },
-            { accessorKey: "date_start", header: "Start Date" },
-            { accessorKey: "date_end", header: "End Date" },
+            { accessorKey: "start_datetime", header: "Start Date" },
+            { accessorKey: "end_datetime", header: "End Date" },
             { accessorKey: "days_of_week", header: "Days of Week" },
-            { accessorKey: "start_time", header: "Start Time" },
-            { accessorKey: "end_time", header: "End Time" },
             { accessorKey: "price", header: "Price" },
             { accessorKey: "action", header: "" },
         ],
@@ -66,7 +64,7 @@ export const RoomPromoTable = () => {
 
     const renderCellContent = (index: number, row: Row<RoomPromo>, cell: Cell<RoomPromo, unknown>) => {
         switch (true) {
-            case index === 8:
+            case index === 6:
                 return (
                     <>
                         <ConfirmDeleteDialog
@@ -91,7 +89,7 @@ export const RoomPromoTable = () => {
 
             case cell.column.id === "days_of_week":
                 const arr = cell.getValue() as number[]
-                const allDays = days.map(d => d.value);
+                const allDays = DAYS.map(d => d.value);
                 const weekdays = [1, 2, 3, 4, 5];
                 const weekends = [0, 6];
 
@@ -105,13 +103,13 @@ export const RoomPromoTable = () => {
                 if (arr.length === 2 && weekends.every(d => arr.includes(d))) return "Weekends";
 
                 // Otherwise, list individual day labels
-                return days
+                return DAYS
                     .filter(d => arr.includes(d.value))
                     .map(d => d.label)
                     .join(", ");
 
-            case cell.column.id === "date_start" || cell.column.id === "date_end":
-                return formatDateMMDDYYYY(cell.getValue() as string);
+            case cell.column.id === "start_datetime" || cell.column.id === "end_datetime":
+                return formatDate(cell.getValue() as string, "MM/DD/YYYY hh:mm A");
 
             default:
                 return flexRender(cell.column.columnDef.cell, cell.getContext());
@@ -125,7 +123,7 @@ export const RoomPromoTable = () => {
                     {table.getHeaderGroups().map((hg) => (
                         <TableRow key={hg.id}>
                             {hg.headers.map((header, index) =>
-                                index !== 8 ? (
+                                index !== 6 ? (
                                     <TableHead key={header.id} className="text-xs text-gray-600">
                                         {flexRender(
                                             header.column.columnDef.header,

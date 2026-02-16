@@ -27,7 +27,6 @@ export function useRoomPromos(page: number, limit: number) {
     return useQuery<RoomPromoResponse, Error>({
         queryKey: [...ROOM_PROMOS_QUERY_KEY, page, limit],
         queryFn: () => {
-            console.log("Fetching room promos...")
             return fetchRoomPromos(page, limit)
         },
         enabled: true,

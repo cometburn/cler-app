@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { Plus } from "lucide-react";
-import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -29,11 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@radix-ui/react-popover";
+
 import {
   Textarea,
 } from "@/components/ui/textarea";
@@ -47,11 +42,10 @@ import { RoomPromo, roomPromoSchema } from "../types/roomPromo.types";
 
 import { useRoomRates } from "@/features/roomRate/hooks/useRoomRates";
 
-import { days } from "@/constants/system";
-import { formatDateMMDDYYYY } from "@/helpers/date.helper";
+import { DAYS } from "@/constants/system";
 import { RoomRate } from "@/features/roomRate/types/roomRate.types";
 import { ApiError } from "@/shared/types/apiError.types";
-
+import { DateTimePickerField } from "@/components/fields/datePicker/DatePickerField";
 
 interface RoomPromoDialogProps {
   mode?: "add" | "edit";
@@ -75,11 +69,9 @@ export const RoomPromoDialog = ({
     () => ({
       name: "",
       room_rate_id: 0,
-      date_start: undefined,
-      date_end: undefined,
+      start_datetime: undefined,
+      end_datetime: undefined,
       days_of_week: [],
-      start_time: "00:00",
-      end_time: "23:59",
       price: 0,
       note: "",
       extra_person_rate: 0,
@@ -101,11 +93,11 @@ export const RoomPromoDialog = ({
       form.reset({
         ...defaultValues,
         ...initialData,
-        date_start: initialData.date_start
-          ? new Date(initialData.date_start)
+        start_datetime: initialData.start_datetime
+          ? new Date(initialData.start_datetime)
           : undefined,
-        date_end: initialData.date_end
-          ? new Date(initialData.date_end)
+        end_datetime: initialData.end_datetime
+          ? new Date(initialData.end_datetime)
           : undefined,
       });
     } else {
@@ -113,13 +105,15 @@ export const RoomPromoDialog = ({
     }
   }, [open, initialData, form, defaultValues]);
 
+
   const handleSubmit = async (values: RoomPromo) => {
     try {
-      const { date_start, date_end, ...rest } = values;
+      const { start_datetime, end_datetime, ...rest } = values;
+
       const payload = {
         ...rest,
-        ...(date_start != null ? { date_start } : {}),
-        ...(date_end != null ? { date_end } : {}),
+        ...(start_datetime != null ? { start_datetime } : {}),
+        ...(end_datetime != null ? { end_datetime } : {}),
       };
 
       await onSubmit(payload as RoomPromo);
@@ -227,115 +221,17 @@ export const RoomPromoDialog = ({
             />
 
             {/* Dates */}
-            <div className="grid grid-cols-2 gap-3 items-start">
-              <FormField
-                control={form.control}
-                name="date_start"
-                render={({ field }) => {
-                  const rawValue = field.value as Date | undefined;
-                  const value: Date | undefined =
-                    rawValue
-                      ? rawValue
-                      : undefined;
+            <DateTimePickerField
+              control={form.control}
+              name="start_datetime"
+              label="Start Date & Time"
+            />
 
-                  return (
-                    <FormItem>
-                      <FormLabel>Start Date</FormLabel>
-                      <FormControl>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button
-                              variant="outline"
-                              data-empty={!value}
-                              className="justify-start text-left font-normal cursor-pointer"
-                            >
-                              {value
-                                ? formatDateMMDDYYYY(value)
-                                : "Select date"}
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0 bg-white shadow-xl rounded-md border border-gray-200">
-                            <Calendar
-                              mode="single"
-                              selected={value}
-                              onSelect={(date) => field.onChange(date ?? undefined)}
-                              className="bg-white"
-                            />
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="sm"
-                              className="mt-2 w-full cursor-pointer"
-                              onClick={() => {
-                                field.onChange(null);
-                                form.clearErrors("date_start");
-                              }}
-                            >
-                              Clear
-                            </Button>
-                          </PopoverContent>
-                        </Popover>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  );
-                }}
-              />
-
-              <FormField
-                control={form.control}
-                name="date_end"
-                render={({ field }) => {
-                  const rawValue = field.value as Date | undefined;
-                  const value: Date | undefined =
-                    rawValue
-                      ? rawValue
-                      : undefined;
-
-                  return (
-                    <FormItem>
-                      <FormLabel>End Date</FormLabel>
-                      <FormControl>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button
-                              variant="outline"
-                              data-empty={!value}
-                              className="justify-start text-left font-normal cursor-pointer"
-                            >
-                              {value
-                                ? formatDateMMDDYYYY(value)
-                                : "Select Date"}
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0 bg-white shadow-xl rounded-md border border-gray-200">
-                            <Calendar
-                              mode="single"
-                              selected={value as Date}
-                              onSelect={(date) => field.onChange(date ?? undefined)}
-                              className="bg-white"
-                            />
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="sm"
-                              className="mt-2 w-full cursor-pointer"
-                              onClick={() => {
-                                field.onChange(null);
-                                form.clearErrors("date_end");
-                              }}
-                            >
-                              Clear
-                            </Button>
-                          </PopoverContent>
-                        </Popover>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  );
-                }}
-              />
-            </div>
+            <DateTimePickerField
+              control={form.control}
+              name="end_datetime"
+              label="End Date & Time"
+            />
 
             {/* Days of Week */}
             <FormField
@@ -350,7 +246,7 @@ export const RoomPromoDialog = ({
                   <FormItem className="py-2">
                     <FormLabel>Days of Week</FormLabel>
                     <div className="flex flex-wrap gap-3 mt-1">
-                      {days.map(({ label, value }) => {
+                      {DAYS.map(({ label, value }) => {
                         const id = `day-${value}`;
                         const checked = selectedDays.includes(value);
 
@@ -390,37 +286,6 @@ export const RoomPromoDialog = ({
                 );
               }}
             />
-
-            {/* Time Range */}
-            <div className="grid grid-cols-2 gap-3">
-              <FormField
-                control={form.control}
-                name="start_time"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Start Time</FormLabel>
-                    <FormControl>
-                      <Input type="time" {...field} value={field.value ?? ""} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="end_time"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>End Time</FormLabel>
-                    <FormControl>
-                      <Input type="time" {...field} value={field.value ?? ""} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
 
             {/* Price */}
             <FormField
