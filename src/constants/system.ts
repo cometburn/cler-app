@@ -8,7 +8,7 @@ import {
   PackageOpenIcon,
 } from "lucide-react";
 
-export const menuItems = [
+export const MENU_ITEMS = [
   {
     title: "Dashboard",
     url: "/dashboard",
@@ -46,7 +46,7 @@ export const menuItems = [
   },
 ];
 
-export const settingItems = [
+export const SETTING_ITEMS = [
   {
     title: "Room Rates",
     url: "/room-rates",
@@ -61,18 +61,18 @@ export const settingItems = [
   },
 ];
 
-export const userSettingItems = [
+export const USER_SETTING_ITEMS = [
   {
     title: "Users",
     url: "/users",
   },
 ];
 
-export const rowPerPage = [1, 10, 20, 50, 100];
+export const ROWS_PER_PAGE = [1, 10, 20, 50, 100];
 
-export const rateTypeOptions = ["hourly", "daily", "weekly", "monthly"];
+export const RATE_TYPE_OPTIONS = ["hourly", "daily", "weekly", "monthly"];
 
-export const days = [
+export const DAYS = [
   { label: "Sun", value: 0 },
   { label: "Mon", value: 1 },
   { label: "Tue", value: 2 },
@@ -82,6 +82,7 @@ export const days = [
   { label: "Sat", value: 6 },
 ];
 
-export const dateFormat = "mm/dd/yyyy";
-
-export const operationalStatus = ["available", "maintenance", "out of service"];
+export const OPERATIONAL_STATUS = ["available", "maintenance", "out of service"];
+export const BOOKING_STATUS = ["check_in", "check_out", "reserved", "transfered", "cancelled", "no_show"];
+export const PAYMENT_STATUS = ["unpaid", "paid", "refunded"];
+export const PAYMENT_TYPE = ["cash", "credit_card", "debit_card", "bank", "e-wallet"]

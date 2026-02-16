@@ -6,13 +6,13 @@ import { AppSidebar } from "@/components/layouts/AppSidebar";        // ← fixe
 import Topbar from "@/components/layouts/Topbar";
 import { CreateHotelDialog } from "@/features/hotel/components/CreateHotelDialog";
 
-import { menuItems, settingItems } from "@/constants/system";
+import { MENU_ITEMS, SETTING_ITEMS } from "@/constants/system";
 
 import { useMe } from "@/features/auth/hooks/useMe";
 
 const routeTitleMap: Record<string, string> = [
-  ...menuItems,
-  ...settingItems,
+  ...MENU_ITEMS,
+  ...SETTING_ITEMS,
 ].reduce((acc, item) => {
   acc[item.url] = item.title;
   return acc;

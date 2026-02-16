@@ -1,4 +1,4 @@
-import { operationalStatus } from "@/constants/system";
+import { OPERATIONAL_STATUS } from "@/constants/system";
 import { bookingSchema } from "@/features/booking/types/booking.types";
 import { roomTypeSchema } from "@/features/roomType/types/roomType.types";
 import { z } from "zod";
@@ -10,7 +10,7 @@ export const dashboardRoomSchema = z.object({
     floor: z.string().optional().nullable(),
     operational_status: z.string()
         .min(1, "Please select a status")
-        .refine((val) => operationalStatus.includes(val), {
+        .refine((val) => OPERATIONAL_STATUS.includes(val), {
             message: "Status is required.",
         }),
     notes: z.string().optional().nullable(),

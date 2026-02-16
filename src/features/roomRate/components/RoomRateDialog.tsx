@@ -32,7 +32,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RoomRate, RoomRateForm, roomRateSchema } from "@/features/roomRate/types/roomRate.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { rateTypeOptions } from "@/constants/system";
+import { RATE_TYPE_OPTIONS } from "@/constants/system";
 import { useRoomTypes } from "@/features/roomType/hooks/useRoomTypes";
 
 
@@ -181,7 +181,7 @@ export const RoomRateDialog = ({
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            {rateTypeOptions.map((opt) => (
+                                            {RATE_TYPE_OPTIONS.map((opt) => (
                                                 <SelectItem key={opt} value={opt}>
                                                     {opt.charAt(0).toUpperCase() + opt.slice(1)}
                                                 </SelectItem>

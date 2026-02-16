@@ -36,7 +36,7 @@ import { Room, roomSchema } from "../types/room.types";
 import { useRoomTypes } from "@/features/roomType/hooks/useRoomTypes";
 import { RoomType } from "@/features/roomType/types/roomType.types";
 import { ApiError } from "@/shared/types/apiError.types";
-import { operationalStatus } from "@/constants/system";
+import { OPERATIONAL_STATUS } from "@/constants/system";
 
 interface RoomDialogProps {
     mode?: "add" | "edit";
@@ -215,7 +215,7 @@ export const RoomDialog = ({
                                         </FormControl>
 
                                         <SelectContent>
-                                            {operationalStatus.map((type: string) => (
+                                            {OPERATIONAL_STATUS.map((type: string) => (
                                                 <SelectItem key={type} value={String(type)}>
                                                     {type.charAt(0).toUpperCase() + type.slice(1)}
                                                 </SelectItem>
