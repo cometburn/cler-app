@@ -45,7 +45,7 @@ export const router = createHashRouter([
     ],
   },
   {
-    path: "*",
+    path: "/*",
     element: <NotFoundPage />,
   },
 ]);

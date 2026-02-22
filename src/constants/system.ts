@@ -84,5 +84,10 @@ export const DAYS = [
 
 export const OPERATIONAL_STATUS = ["available", "maintenance", "out of service"];
 export const BOOKING_STATUS = ["check_in", "check_out", "reserved", "transfered", "cancelled", "no_show"];
-export const PAYMENT_STATUS = ["unpaid", "paid", "refunded"];
-export const PAYMENT_TYPE = ["cash", "credit_card", "debit_card", "bank", "e-wallet"]
+export const PAYMENT_STATUS = ["paid", "unpaid", "refunded", "cancelled"];
+export const PAYMENT_TYPE = ["cash", "credit_card", "debit_card", "bank", "e-wallet", "cancelled"]
+export const GRACE_PERIOD = 15;
+export const ALARM_PERIOD = 10;
+
+export const PRODUCT_CATEGORY = ['product', 'service', 'room_addon']
+export const PRODUCT_UNIT = ['pack', 'box', 'bottle', 'can', 'kg', 'g', 'l', 'ml', 'pcs']

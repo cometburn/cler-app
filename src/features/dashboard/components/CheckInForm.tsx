@@ -22,13 +22,14 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { DateTimePickerField } from "@/components/fields/datePicker/DatePickerField";
 
-import { Booking, bookingSchema } from "../types/booking.types";
+import { Booking, bookingSchema } from "../../booking/types/booking.types";
 import { RoomRate } from "@/features/roomRate/types/roomRate.types";
 import { ApiError } from "@/shared/types/apiError.types";
 import { Room } from "@/features/room/types/room.types";
-import { fetchRoomRatesByRoomType } from "../api/booking.api";
-import { useCreateBooking } from "../hooks/useBookings";
+import { fetchRoomRatesByRoomType } from "../../booking/api/booking.api";
+import { useCreateBooking } from "../../booking/hooks/useBookings";
 import { BOOKING_STATUS } from "@/constants/system";
+import { toast } from "sonner";
 
 interface CheckInFormProps {
     open: boolean;
@@ -173,9 +174,12 @@ export const CheckInForm = ({ open, setOpen, initialData, roomData }: CheckInFor
                 room_id: roomData?.id,
             };
 
-            await createMutation.mutateAsync(bookingSchema.parse(payload));
+            await createMutation.mutateAsync(bookingSchema.parse(payload), {
+                onSuccess: () => {
+                    toast.success("Checked in successfully");
+                },
+            });
             setOpen(false);
-            form.reset(defaultValues);
         } catch (error: unknown) {
             const errors = (error as ApiError).response?.data?.errors;
 
@@ -250,7 +254,7 @@ export const CheckInForm = ({ open, setOpen, initialData, roomData }: CheckInFor
                     />
 
                     {/* Dates */}
-                    <div className="flex flex-row gap-4 ">
+                    <div className="flex flex-col md:flex-row gap-4 ">
                         <DateTimePickerField
                             control={form.control}
                             name="start_datetime"
@@ -294,7 +298,7 @@ export const CheckInForm = ({ open, setOpen, initialData, roomData }: CheckInFor
                         name="total_price"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Total Price</FormLabel>
+                                <FormLabel>Amount</FormLabel>
                                 <FormControl>
                                     <Input
                                         type="number"
@@ -319,7 +323,7 @@ export const CheckInForm = ({ open, setOpen, initialData, roomData }: CheckInFor
                             <FormItem>
                                 <FormLabel>Note</FormLabel>
                                 <FormControl>
-                                    <Textarea {...field} value={field.value ?? ""} rows={6} className="h-30" />
+                                    <Textarea {...field} value={field.value ?? ""} rows={6} className="h-10" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -334,7 +338,7 @@ export const CheckInForm = ({ open, setOpen, initialData, roomData }: CheckInFor
                             onClick={() => setOpen(false)}
                             className="flex-1 text-gray-500"
                         >
-                            Cancel
+                            Close
                         </Button>
                         <Button type="submit" className="flex-3 bg-green-500 hover:bg-green-600">
                             Check In

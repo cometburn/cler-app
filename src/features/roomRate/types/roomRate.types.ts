@@ -9,6 +9,7 @@ export const roomRateSchema = z.object({
     duration_minutes: z.number().min(1, "Must be greater than 0").optional(),
     base_price: z.number().min(1, "Must be greater than 0"),
     extra_person_rate: z.number().default(0),
+    overstay_rate: z.number().default(0),
     is_dynamic: z.boolean().default(false),
     id: z.number().optional(),
 });

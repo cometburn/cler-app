@@ -19,7 +19,7 @@ export const roomPromoSchema = z.object({
         message: "Start date must not be greater than end date",
         path: ["start_datetime"],
     }
-);;
+);
 
 export type RoomPromo = z.infer<typeof roomPromoSchema>;
 

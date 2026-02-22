@@ -61,6 +61,7 @@ export const RoomRateDialog = ({
             duration_minutes: 60,
             base_price: 500,
             extra_person_rate: 0,
+            overstay_rate: 0,
             is_dynamic: false,
             room_type_id: 0
         }),
@@ -261,26 +262,48 @@ export const RoomRateDialog = ({
                             )}
                         />
 
-                        {/* Extra Person Rate */}
-                        <FormField
-                            control={form.control}
-                            name="extra_person_rate"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Extra Person Rate</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            type="number"
-                                            value={field.value}
-                                            onChange={(e) =>
-                                                field.onChange(Number(e.target.value) || 0)
-                                            }
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        <div className="flex flex-row gap-2 pt-2">
+                            {/* Overstay Rate */}
+                            <FormField
+                                control={form.control}
+                                name="overstay_rate"
+                                render={({ field }) => (
+                                    <FormItem className="flex-1">
+                                        <FormLabel>Overstay Rate</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                value={field.value}
+                                                onChange={(e) =>
+                                                    field.onChange(Number(e.target.value) || 0)
+                                                }
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            {/* Extra Person Rate */}
+                            <FormField
+                                control={form.control}
+                                name="extra_person_rate"
+                                render={({ field }) => (
+                                    <FormItem className="flex-1">
+                                        <FormLabel>Extra Person Rate</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                value={field.value}
+                                                onChange={(e) =>
+                                                    field.onChange(Number(e.target.value) || 0)
+                                                }
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
 
                         {/* Dynamic Pricing */}
                         <FormField

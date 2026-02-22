@@ -63,7 +63,7 @@ export const ConfirmDeleteDialog = ({
         <DialogHeader>
           <DialogTitle className="mb-5">Confirm Delete</DialogTitle>
           <DialogDescription>
-            {message || `Do you want to delete ${entityName}?`}
+            <span>{message || `Are you sure you want to delete `}</span> <span className="font-bold">{entityName}</span>?
           </DialogDescription>
         </DialogHeader>
 

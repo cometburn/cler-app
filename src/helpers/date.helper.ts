@@ -97,3 +97,18 @@ export const manilaDate = (date: Date) => {
 
     return formatter.format(date)
 }
+
+export const isOverTime = (timestamp: string | Date, minutes: number) => {
+    const baseTime = new Date(timestamp).getTime();
+    const expiryTime = baseTime + minutes * 60 * 1000;
+    const now = Date.now();
+
+    return now > expiryTime;
+}
+
+export const isEndingSoon = (endDatetime: string | Date, minutes = 10): boolean => {
+    const end = new Date(endDatetime).getTime();
+    const now = Date.now();
+    const diff = end - now;
+    return diff <= minutes * 60000 && diff > 0;
+};

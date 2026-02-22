@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -7,8 +7,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { useWatchScrollAreaOverflow } from "@/helpers/scrollarea.helper";
 
 interface DateTimePickerProps {
   value?: Date;
@@ -136,10 +137,12 @@ export function DateTimePicker({
             onSelect={handleDateSelect}
             initialFocus
           />
-          <div className="flex flex-col sm:flex-row sm:h-[300px] divide-y sm:divide-y-0 sm:divide-x">
+          <div className="flex flex-col sm:flex-row h-[150px] md:h-[250px] sm:h-full divide-y sm:divide-y-0 sm:divide-x">
             {/* Hours */}
-            <ScrollArea className="w-64 sm:w-auto h-[180px] sm:h-full">
-              <div className="flex sm:flex-col p-2 gap-1">
+            <ScrollArea
+              className="[&>div>div[style]]:!block w-64 sm:w-auto h-[45px] md:h-[250px] !overflow-x-scroll md:overflow-x-hidden"
+            >
+              <div className="flex sm:flex-col px-2 py-1 gap-1">
                 {Array.from({ length: 12 }, (_, i) => i + 1)
                   .reverse()
                   .map((hour) => (
@@ -161,7 +164,7 @@ export function DateTimePicker({
             </ScrollArea>
 
             {/* Minutes */}
-            <ScrollArea className="w-64 sm:w-auto h-[180px] sm:h-full">
+            <ScrollArea className="w-64 sm:w-auto h-[50px] md:h-[250px]">
               <div className="flex sm:flex-col p-2 gap-1">
                 {Array.from({ length: 60 }, (_, i) => i).map((minute) => (
                   <Button
@@ -184,7 +187,7 @@ export function DateTimePicker({
             </ScrollArea>
 
             {/* AM/PM */}
-            <ScrollArea className="h-[180px] sm:h-full">
+            <ScrollArea className="w-64 sm:w-auto h-[50px] md:h-[1820px]">
               <div className="flex sm:flex-col p-2 gap-1">
                 {["AM", "PM"].map((ampm) => (
                   <Button
