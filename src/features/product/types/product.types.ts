@@ -8,8 +8,8 @@ export const productSchema = z
         sku: z.string().optional().nullable(),
         category: z.enum(PRODUCT_CATEGORY),
         price: z.number().positive(),
-        track_stock: z.boolean().optional().default(true),
         unit: z.enum(PRODUCT_UNIT),
+        track_stock: z.boolean().optional().default(true),
         is_active: z.boolean().optional().default(true),
     });
 

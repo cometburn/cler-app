@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { BOOKING_STATUS, PAYMENT_STATUS, PAYMENT_TYPE } from "@/constants/system";
 import { bookingAddonSchema } from "@/features/bookingAddon/types/bookingAddon.types";
+import { orderSchema } from "@/features/order/types/order.types";
 
 export const bookingSchema = z.object({
     id: z.number().optional(),
@@ -19,6 +20,7 @@ export const bookingSchema = z.object({
     }).optional(),
     note: z.string().optional(),
     booking_addons: z.array(bookingAddonSchema).optional(),
+    orders: orderSchema.optional(),
 }).refine(
     (data) => {
         return data.start_datetime <= data.end_datetime;
