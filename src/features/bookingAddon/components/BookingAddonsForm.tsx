@@ -135,6 +135,8 @@ export const BookingAddonsForm = ({ bookingData }: AddonsFormProps) => {
         };
     }, [debouncedSearch, page, limit]);
 
+    const handleQuantityChange = (value: number) => value;
+
     /**
      * Handle addon submission - POST to /addons API
      */
@@ -188,11 +190,11 @@ export const BookingAddonsForm = ({ bookingData }: AddonsFormProps) => {
         <div className="flex flex-col gap-4 my-5">
             <Form {...form}>
                 <div className="space-y-4">
-                    <div className="grid grid-cols-[1fr_40px_40px] gap-2 items-start">
+                    <div className="grid grid-cols-1 md:grid-cols-[1fr_80px] gap-2 items-start">
                         <FormField
                             control={form.control}
                             name="product_id"
-                            render={({ field }) => {
+                            render={({ field, fieldState }) => {
                                 return (
                                     <FormItem>
                                         <FormLabel className="text-xs">Addon</FormLabel>
@@ -220,7 +222,7 @@ export const BookingAddonsForm = ({ bookingData }: AddonsFormProps) => {
                                                             setSelectedAddonName("");
                                                         }
                                                     }}
-                                                    className="bg-white"
+                                                    className={`bg-white ${fieldState.error ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
                                                 />
                                                 <ComboboxContent>
                                                     {addOnLoading ? (
@@ -259,51 +261,52 @@ export const BookingAddonsForm = ({ bookingData }: AddonsFormProps) => {
                             }}
                         />
 
-                        <FormField
-                            control={form.control}
-                            name="quantity"
-                            render={({ field }) => (
-                                <FormItem className="w-10">
-                                    <FormLabel className="text-xs">Qty</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            type="number"
-                                            min="1"
-                                            className="no-arrows bg-white"
-                                            defaultValue={field.value || 1}
-                                            onBlur={(e) => {
-                                                const value = parseInt(e.target.value);
-                                                // Only update on blur with valid number
-                                                if (!isNaN(value) && value > 0) {
-                                                    field.onChange(value);
-                                                } else {
-                                                    field.onChange(1);
-                                                    e.target.value = '1';
-                                                }
-                                            }}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        <div className="flex items-start gap-2 w-full">
+                            <FormField
+                                control={form.control}
+                                name="quantity"
+                                render={({ field }) => (
+                                    <FormItem className="w-10">
+                                        <FormLabel className="text-xs">Qty</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                className="no-arrows bg-white"
+                                                value={field.value ? String(field.value) : ""}
+                                                onChange={(e) => field.onChange(handleQuantityChange(Number(e.target.value)))}
+                                            />
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
 
-                        <div className="flex items-center justify-end mt-5">
-                            <Button
-                                type="button"
-                                onClick={form.handleSubmit(handleSubmit)}
-                                size="icon"
-                                className="h-[34px] w-[34px] bg-green-600 hover:bg-green-700 text-white rounded-full float-right"
-                                title="Add Addon"
-                            >
-                                <Plus className="w-4 h-4" />
-                            </Button>
+                            <div className="flex flex-1 items-center mt-5">
+                                <Button
+                                    type="button"
+                                    onClick={form.handleSubmit(handleSubmit)}
+                                    className="md:hidden h-[34px] w-full bg-green-600 hover:bg-green-700 text-white"
+                                    title="Add Addon"
+                                >
+                                    <Plus className="w-4 h-4" />
+                                    <span>Add Item</span>
+                                </Button>
+
+                                <Button
+                                    type="button"
+                                    onClick={form.handleSubmit(handleSubmit)}
+                                    size="icon"
+                                    className="hidden md:block h-[34px] w-[34px] bg-green-600 hover:bg-green-700 text-white rounded-full float-right"
+                                    title="Add Addon"
+                                >
+                                    <Plus className="w-4 h-4 mx-auto" />
+                                </Button>
+                            </div>
                         </div>
 
                     </div>
 
                     {/* Show calculated total (optional) */}
-                    {form.watch("total_price") > 0 && (
+                    {form.watch("total_price") > 0 && form.watch("quantity") > 0 && (
                         <div className="flex justify-end text-sm text-gray-600 gap-2">
                             <span>Total:</span>
                             <span>{form.watch("total_price").toFixed(2)}</span>
