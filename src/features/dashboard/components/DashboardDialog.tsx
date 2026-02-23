@@ -58,13 +58,13 @@ export const DashboardDialog = ({
                 {trigger && trigger}
             </DialogTrigger>
 
-            <DialogContent className="bg-white overflow-y-auto max-h-[90%] min-h-[90%] md:min-h-auto flex flex-col justify-start">
+            <DialogContent className="bg-white overflow-y-auto max-h-[90%] min-h-[90%] md:min-h-auto flex flex-col justify-start px-4 md:px-4">
                 <DialogHeader className="gap-0 text-left">
-                    <DialogTitle className="flex items-center">
+                    <DialogTitle className="flex flex-col md:flex-row item-start md:items-center gap-2">
                         <span className="mr-1">{frozenMode === "add" ? "Add" : "Current"} Booking:</span>
                         <span className={`mr-2 ${frozenMode === "add" ? "text-green-600" : "text-red-600"}`}>Room {roomData?.name}</span>
                         {frozenMode === "edit" && bookingData?.end_datetime && (
-                            <TimeRemaining endDatetime={bookingData.end_datetime} className="text-white rounded-full p-1 px-3 text-xs shadow-md" />
+                            <TimeRemaining endDatetime={bookingData.end_datetime} className="text-white rounded-full p-1 px-3 text-xs shadow-md w-auto" />
                         )}
                     </DialogTitle>
                     <DialogDescription className="text-xs">
