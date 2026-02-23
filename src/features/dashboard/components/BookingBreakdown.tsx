@@ -32,9 +32,7 @@ export const BookingBreakdown = ({
     };
 
     return (
-        <div className="border-b border-t border-gray-200 py-5 text-xs space-y-2">
-            <p className="font-medium text-gray-700">Breakdown</p>
-
+        <div className="border-t border-b border-gray-200 py-2 text-xs space-y-2 mt-4">
             <div className="flex justify-between text-gray-600">
                 <span>Room Charge</span>
                 <span>{roomCharge.toFixed(2)}</span>
@@ -55,15 +53,15 @@ export const BookingBreakdown = ({
             )}
 
             {addonsTotal > 0 && (
-                <div className="flex justify-between text-gray-600 border-t border-dashed pt-2">
-                    <span>Room Add-ons</span>
+                <div className="flex justify-between text-gray-600">
+                    <span className="font-bold">Room Add-ons</span>
                     <span>{addonsTotal.toFixed(2)}</span>
                 </div>
             )}
 
             {ordersTotal > 0 && (
-                <div className="flex justify-between text-gray-600 border-t border-dashed pt-2">
-                    <span>Orders</span>
+                <div className="flex justify-between text-gray-600">
+                    <span className="font-bold">Orders</span>
                     <span>{ordersTotal.toFixed(2)}</span>
                 </div>
             )}
