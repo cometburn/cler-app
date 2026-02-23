@@ -70,6 +70,12 @@ export const useCheckOutForm = ({ open, setOpen, initialData, roomData }: UseChe
         setAddonsTotal(total);
     }, [form.watch("booking_addons")]);
 
+    useEffect(() => {
+        const orderItems = form.watch("orders.order_items") || [];
+        const total = orderItems.reduce((sum, item) => sum + (Number(item.total_price) || 0), 0);
+        setOrdersTotal(total);
+    }, [form.watch("orders.order_items")]);
+
     const total = (roomRate?.base_price ?? 0) + extraPersonCharge + overstayCharge + addonsTotal + ordersTotal;
 
     const roomTypeId = useMemo(() => roomData?.room_type_id, [roomData?.room_type_id]);
@@ -96,9 +102,6 @@ export const useCheckOutForm = ({ open, setOpen, initialData, roomData }: UseChe
 
             try {
                 setIsLoadingRates(true);
-
-                console.log('test')
-
                 const data = await fetchRoomRatesByRoomType(roomTypeId);
 
                 if (isCancelled) return;

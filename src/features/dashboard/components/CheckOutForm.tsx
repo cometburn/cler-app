@@ -8,7 +8,6 @@ import { DateTimePickerField } from "@/components/fields/datePicker/DatePickerFi
 import { ConfirmDialog } from "@/components/dialogs/ConfirmDialog";
 import { BookingBreakdown } from "./BookingBreakdown";
 import { BookingAddonsForm } from "../../bookingAddon/components/BookingAddonsForm";
-import { OrderForm } from "./OrderForm";
 import { useCheckOutForm } from "../hooks/useCheckoutForm";
 import { PAYMENT_STATUS, PAYMENT_TYPE } from "@/constants/system";
 import { removeUnderscore } from "@/helpers/string.helper";
@@ -17,6 +16,7 @@ import { Room } from "@/features/room/types/room.types";
 import { RoomRate } from "@/features/roomRate/types/roomRate.types";
 import { Loader } from "lucide-react";
 import { FormProvider } from "react-hook-form";
+import { OrderItemForm } from "@/features/orderItem/components/OrderItemForm";
 
 interface CheckOutFormProps {
     open: boolean;
@@ -117,18 +117,16 @@ export const CheckOutForm = ({ open, setOpen, initialData, roomData }: CheckOutF
                         />
 
                         {/* Tabs */}
-                        <Tabs defaultValue="addons" className="gap-0 mb-5 p-4 rounded-md border border-gray-200 gap-4 bg-gray-100">
+                        <Tabs defaultValue="addons" className="gap-0 py-2 px-4 rounded-md border border-gray-200 bg-gray-100">
                             <TabsList variant="line" className="px-0 grid grid-cols-2 w-full">
                                 <TabsTrigger value="addons" className="cursor-pointer">Room Add-ons</TabsTrigger>
                                 <TabsTrigger value="order" className="cursor-pointer">Orders</TabsTrigger>
                             </TabsList>
                             <TabsContent value="addons">
-                                {/* <AddonsForm onTotalChange={setAddonsTotal} /> */}
                                 <BookingAddonsForm bookingData={initialData} />
                             </TabsContent>
                             <TabsContent value="order">
-                                {/* <OrderForm onTotalChange={setOrdersTotal} /> */}
-                                <OrderForm />
+                                <OrderItemForm bookingData={initialData} />
                             </TabsContent>
                         </Tabs>
 
@@ -253,6 +251,7 @@ export const CheckOutForm = ({ open, setOpen, initialData, roomData }: CheckOutF
                                     message="Are you sure you want to cancel this booking?"
                                     onConfirm={handleCancelBooking}
                                     loading={updateMutation.isPending}
+                                    confirmBtnClass="flex-3 border-red-300 hover:bg-red-100 hover:text-red-600 animate-[pulse-red_3s_ease-in-out_infinite]"
                                     trigger={
                                         <Button variant="outline" type="button" className="flex-3 border-red-300 hover:bg-red-100 hover:text-red-600 animate-[pulse-red_3s_ease-in-out_infinite]">
                                             Cancel Booking
@@ -266,8 +265,9 @@ export const CheckOutForm = ({ open, setOpen, initialData, roomData }: CheckOutF
                                     message="Are you sure you want to check out?"
                                     onConfirm={form.handleSubmit(handleSubmit)}
                                     loading={updateMutation.isPending}
+                                    confirmBtnClass="flex-3 border-red-500 hover:bg-red-100 bg-red-700 hover:bg-red-800 text-white"
                                     trigger={
-                                        <Button type="button" className="flex-3 bg-red-700 hover:bg-red-800">
+                                        <Button type="button" className="flex-3  border-red-500 hover:bg-red-100 bg-red-700 hover:bg-red-800">
                                             Check Out
                                         </Button>
                                     }
