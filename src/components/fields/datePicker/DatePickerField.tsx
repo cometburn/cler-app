@@ -46,7 +46,7 @@ export function DateTimePickerField<
           <FormControl>
             <DateTimePicker
               value={field.value}
-              onChange={field.onChange}
+              onChange={(date) => field.onChange(date)}
               placeholder={placeholder}
               disabled={disabled}
               formatDate={formatDate}
