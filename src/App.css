@@ -212,3 +212,32 @@ li[data-sonner-toast][data-type="error"] {
 .no-arrows {
   -moz-appearance: textfield;
 }
+
+/* Dashboard Animations */
+@keyframes text-pop {
+  0% {
+    transform: scale(1);
+  }
+
+  40% {
+    transform: scale(5.25);
+  }
+
+  60% {
+    transform: scale(5);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Check In (green pulse optional) */
+.animate-checkin-pop {
+  animation: text-pop infinite .8s ease-out;
+}
+
+/* Check Out (same animation, optional red color) */
+.animate-checkout-pop {
+  animation: text-pop infinite .8s ease-out;
+}
