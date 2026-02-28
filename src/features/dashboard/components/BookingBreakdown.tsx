@@ -1,6 +1,6 @@
 interface BookingBreakdownProps {
     roomCharge: number;
-    extraPerson: number;
+    extraPerson: number | null | undefined;
     extraPersonRate: number;
     overstayMinutes: number;
     billedHours: number;
@@ -8,6 +8,7 @@ interface BookingBreakdownProps {
     overstayCharge: number;
     addonsTotal?: number;
     ordersTotal?: number;
+    bookingChargesTotal?: number;
     total: number;
 }
 
@@ -21,9 +22,9 @@ export const BookingBreakdown = ({
     overstayCharge,
     addonsTotal = 0,
     ordersTotal = 0,
-    total,
+    bookingChargesTotal = 0,
 }: BookingBreakdownProps) => {
-    const extraPersonCharge = extraPerson * extraPersonRate;
+    const extraPersonCharge = extraPerson ? extraPerson * extraPersonRate : 0;
 
     const formatOverstay = (minutes: number) => {
         const h = Math.floor(minutes / 60);
@@ -32,15 +33,16 @@ export const BookingBreakdown = ({
     };
 
     return (
-        <div className="border-t border-b border-gray-200 py-2 text-xs space-y-2 mt-4">
+        <div className="border-b border-gray-200 text-xs space-y-1 pb-2">
+            <h5 className="border-b border-gray-200 pb-1 font-bold text-gray-400">Breakdown</h5>
             <div className="flex justify-between text-gray-600">
                 <span>Room Charge</span>
                 <span>{roomCharge.toFixed(2)}</span>
             </div>
 
-            {extraPerson > 0 && (
+            {!!extraPerson && extraPerson > 0 && (
                 <div className="flex justify-between text-gray-600">
-                    <span>Extra Person ({extraPerson} pax)</span>
+                    <span>Extra Person ({extraPerson} pax x {extraPersonRate.toFixed(2)})</span>
                     <span>{extraPersonCharge.toFixed(2)}</span>
                 </div>
             )}
@@ -56,6 +58,13 @@ export const BookingBreakdown = ({
                 <div className="flex justify-between text-gray-600">
                     <span className="font-bold">Room Add-ons</span>
                     <span>{addonsTotal.toFixed(2)}</span>
+                </div>
+            )}
+
+            {bookingChargesTotal > 0 && (
+                <div className="flex justify-between text-gray-600">
+                    <span className="font-bold">Booking Charges</span>
+                    <span>{bookingChargesTotal.toFixed(2)}</span>
                 </div>
             )}
 

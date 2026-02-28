@@ -16,6 +16,9 @@ import { CheckInForm } from "./CheckInForm";
 import { CheckOutForm } from "./CheckOutForm";
 import { TimeRemaining } from "./TimeRemaining";
 import { Loader } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+import { DashboardContext } from "../context/dashboard.context";
 
 interface DashboardDialogProps {
     mode?: "add" | "edit";
@@ -58,7 +61,12 @@ export const DashboardDialog = ({
                 {trigger && trigger}
             </DialogTrigger>
 
-            <DialogContent className="bg-white overflow-y-auto max-h-[90%] min-h-[90%] md:min-h-auto flex flex-col justify-start px-4 md:px-4">
+            <DialogContent
+                className={cn(
+                    "bg-white overflow-y-auto max-h-[90%] min-h-[90%] md:min-h-auto flex flex-col justify-start px-4 md:px-4 max-w-screen-xs",
+                    frozenMode === "edit" ? "sm:max-w-5xl" : ""
+                )}
+            >
                 <DialogHeader className="gap-0 text-left">
                     <DialogTitle className="flex flex-col md:flex-row item-start md:items-center gap-2">
                         <span className="mr-1">{frozenMode === "add" ? "Add" : "Current"} Booking:</span>
@@ -73,21 +81,19 @@ export const DashboardDialog = ({
                 </DialogHeader>
 
                 {isLoadingData ? (
-                    <div className="flex items-center justify-center py-8">
-                        <Loader className="animate-spin h-8 w-8" />
+                    <div className="flex items-center justify-center py-8 min-h-[300px]">
+                        <Loader className="animate-spin" />
                     </div>
                 ) : frozenMode === "add" ? (
-                    <div className="max-w-screen-xs">
-                        <CheckInForm
-                            key="check-in"
-                            open={open}
-                            setOpen={setOpen}
-                            initialData={null}
-                            roomData={roomData}
-                        />
-                    </div>
+                    <CheckInForm
+                        key="check-in"
+                        open={open}
+                        setOpen={setOpen}
+                        initialData={null}
+                        roomData={roomData}
+                    />
                 ) : (
-                    <div className="max-w-screen-xs">
+                    <DashboardContext.Provider value={{ open, setOpen, roomData: roomData as Room }}>
                         <CheckOutForm
                             key="check-out"
                             open={open}
@@ -95,7 +101,7 @@ export const DashboardDialog = ({
                             initialData={bookingData || null}
                             roomData={roomData}
                         />
-                    </div>
+                    </DashboardContext.Provider>
                 )}
             </DialogContent>
         </Dialog>
