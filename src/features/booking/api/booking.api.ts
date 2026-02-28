@@ -1,17 +1,6 @@
 import { apiFetch } from "@/lib/api";
-import { RoomRate } from "@/features/roomRate/types/roomRate.types";
-import { Booking } from "../types/booking.types";
+import { Booking, CancelBooking, CreateBooking, TransferBooking, UpdateBooking } from "../types/booking.types";
 
-/**
- * Fetch room rates by room type
- * @param id 
- * @returns 
- */
-export const fetchRoomRatesByRoomType = async (id: number): Promise<RoomRate[]> => {
-    return await apiFetch<RoomRate[]>(`/room-rates/room-type/${id}`, {
-        method: "GET",
-    });
-};
 
 /**
  * Fetch booking by id
@@ -30,8 +19,8 @@ export const fetchBookingById = async (id: number): Promise<Booking> => {
  * @param payload 
  * @returns 
  */
-export const createBooking = async (payload: Booking): Promise<Booking> => {
-    return await apiFetch<Booking>("/bookings", {
+export const createBooking = async (payload: CreateBooking): Promise<CreateBooking> => {
+    return await apiFetch<CreateBooking>("/bookings", {
         method: 'POST',
         body: JSON.stringify(payload),
     })
@@ -42,9 +31,33 @@ export const createBooking = async (payload: Booking): Promise<Booking> => {
  * @param payload 
  * @returns 
  */
-export const updateBooking = async (payload: Booking): Promise<Booking> => {
-    return await apiFetch<Booking>(`/bookings/${payload.id}`, {
+export const updateBooking = async (payload: UpdateBooking): Promise<UpdateBooking> => {
+    return await apiFetch<UpdateBooking>(`/bookings/${payload.id}`, {
         method: 'PUT',
+        body: JSON.stringify(payload),
+    })
+}
+
+/**
+ * cancel booking
+ * @param payload 
+ * @returns 
+ */
+export const cancelBooking = async (payload: CancelBooking): Promise<CancelBooking> => {
+    return await apiFetch<CancelBooking>(`/bookings/${payload.id}`, {
+        method: 'PUT',
+        body: JSON.stringify(payload),
+    })
+}
+
+/**
+ * Transfer booking
+ * @param payload 
+ * @returns 
+ */
+export const transferBooking = async (payload: TransferBooking): Promise<TransferBooking> => {
+    return await apiFetch<TransferBooking>(`/booking-transfers`, {
+        method: 'POST',
         body: JSON.stringify(payload),
     })
 }

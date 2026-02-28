@@ -2,17 +2,19 @@ import { useMutation, useQuery, useQueryClient, UseQueryOptions } from "@tanstac
 import {
     createBooking,
     updateBooking,
-    fetchRoomRatesByRoomType,
-    fetchBookingById
+    fetchBookingById,
+    cancelBooking,
+    transferBooking
 } from "../api/booking.api";
+import { fetchRoomRatesByRoomType } from "@/features/roomRate/api/roomRate.api";
+
 import { RoomRate } from "@/features/roomRate/types/roomRate.types";
-import { Booking } from "../types/booking.types";
+import { Booking, CancelBooking, CreateBooking, TransferBooking, UpdateBooking } from "../types/booking.types";
 import { ApiError } from "@/shared/types/apiError.types";
 import { toast } from "sonner";
 
 const ROOM_RATES_BY_ROOM_TYPE_QUERY_KEY = ["roomRatesByRoomType"];
 const BOOKINGS_QUERY_KEY = ["bookings"];
-const BOOKING_QUERY_KEY = ["booking"];
 
 /**
  * Fetch room rates by room type
@@ -53,7 +55,7 @@ export function useBookingById(
 export function useCreateBooking() {
     const queryClient = useQueryClient();
 
-    return useMutation<Booking, ApiError, Booking>({
+    return useMutation<CreateBooking, ApiError, CreateBooking>({
         mutationFn: createBooking,
 
         // onSuccess: () => {
@@ -84,7 +86,7 @@ export function useCreateBooking() {
 export function useUpdateBooking() {
     const queryClient = useQueryClient();
 
-    return useMutation<Booking, ApiError, Booking>({
+    return useMutation<UpdateBooking, ApiError, UpdateBooking>({
         mutationFn: updateBooking,
 
         // onSuccess: () => {
@@ -96,6 +98,64 @@ export function useUpdateBooking() {
 
             if (!errors || !Array.isArray(errors) || !errors.some(err => err.path && err.path.length > 0)) {
                 const message = errors?.[0]?.message || error.message || "Failed to update booking";
+                toast.error(message);
+            }
+        },
+
+        onSettled: () => {
+            queryClient.invalidateQueries({
+                queryKey: BOOKINGS_QUERY_KEY,
+            });
+        },
+    });
+}
+
+/**
+ * Cancel booking
+ * @returns 
+ */
+export function useCancelBooking() {
+    const queryClient = useQueryClient();
+
+    return useMutation<CancelBooking, ApiError, CancelBooking>({
+        mutationFn: cancelBooking,
+
+        // onSuccess: () => {
+        //     toast.success("Booking updated successfully");
+        // },
+
+        onError: (error) => {
+            const errors = error.response?.data?.errors;
+
+            if (!errors || !Array.isArray(errors) || !errors.some(err => err.path && err.path.length > 0)) {
+                const message = errors?.[0]?.message || error.message || "Failed to update booking";
+                toast.error(message);
+            }
+        },
+
+        onSettled: () => {
+            queryClient.invalidateQueries({
+                queryKey: BOOKINGS_QUERY_KEY,
+            });
+        },
+    });
+}
+
+export function useTransferBooking() {
+    const queryClient = useQueryClient();
+
+    return useMutation<TransferBooking, ApiError, TransferBooking>({
+        mutationFn: transferBooking,
+
+        onSuccess: () => {
+            toast.success("Booking transferred successfully");
+        },
+
+        onError: (error) => {
+            const errors = error.response?.data?.errors;
+
+            if (!errors || !Array.isArray(errors) || !errors.some(err => err.path && err.path.length > 0)) {
+                const message = errors?.[0]?.message || error.message || "Failed to transfer booking";
                 toast.error(message);
             }
         },

@@ -160,13 +160,7 @@ export const BookingAddonsForm = ({ bookingData }: AddonsFormProps) => {
 
         try {
             const result = await createMutation.mutateAsync(bookingAddonSchema.parse(payload));
-
-            // Get current booking_addons from parent form
             const currentAddons = parentForm.getValues("booking_addons") || [];
-
-            console.log("result", result);
-
-            // Add the new addon with the result data (includes id from backend)
             const updatedAddons = [...currentAddons, result];
 
             // Update parent form
@@ -187,7 +181,7 @@ export const BookingAddonsForm = ({ bookingData }: AddonsFormProps) => {
     };
 
     return (
-        <div className="flex flex-col gap-4 my-5">
+        <div className="flex flex-col gap-4 my-4">
             <Form {...form}>
                 <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-[1fr_80px] gap-2 items-start">

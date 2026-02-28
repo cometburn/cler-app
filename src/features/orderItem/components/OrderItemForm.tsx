@@ -193,7 +193,7 @@ export const OrderItemForm = ({ bookingData }: OrderItemFormProps) => {
     };
 
     return (
-        <div className="flex flex-col gap-4 my-5">
+        <div className="flex flex-col gap-4 my-4">
             <Form {...form}>
                 <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-[1fr_80px] gap-2 items-start">
@@ -271,7 +271,7 @@ export const OrderItemForm = ({ bookingData }: OrderItemFormProps) => {
                                 control={form.control}
                                 name="quantity"
                                 render={({ field }) => (
-                                    <FormItem className="w-10">
+                                    <FormItem className="w-20">
                                         <FormLabel className="text-xs">Qty</FormLabel>
                                         <FormControl>
                                             <Input

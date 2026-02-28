@@ -11,6 +11,17 @@ export const fetchRoomRates = async (
     });
 };
 
+/**
+ * Fetch room rates by room type
+ * @param id 
+ * @returns 
+ */
+export const fetchRoomRatesByRoomType = async (id: number): Promise<RoomRate[]> => {
+    return await apiFetch<RoomRate[]>(`/room-rates/room-type/${id}`, {
+        method: "GET",
+    });
+};
+
 export const createRoomRate = async (payload: RoomRate): Promise<RoomRate> => {
     return apiFetch<RoomRate>("/room-rates", {
         method: "POST",
