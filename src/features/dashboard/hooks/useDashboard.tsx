@@ -5,12 +5,13 @@ import { DashboardRoomResponse } from "../types/dashboard.types";
 import {
     createBooking,
     updateBooking,
-    fetchRoomRatesByRoomType
 } from "@/features/booking/api/booking.api";
+
 import { RoomRate } from "@/features/roomRate/types/roomRate.types";
 import { Booking } from "@/features/booking/types/booking.types";
 import { ApiError } from "@/shared/types/apiError.types";
 import { toast } from "sonner";
+import { fetchRoomRatesByRoomType } from "@/features/roomRate/api/roomRate.api";
 
 /* ================================
    Query Keys
