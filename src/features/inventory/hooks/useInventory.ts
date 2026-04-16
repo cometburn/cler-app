@@ -6,119 +6,121 @@ import {
 import { toast } from "sonner";
 
 import {
-    fetchRooms,
-    createRoom,
-    updateRoom,
-    deleteRoom,
-} from "../api/room.api";
+    fetchInventories,
+    createInventory,
+    updateInventory,
+    deleteInventory,
+} from "../api/inventory.api";
 
-import type { Room, RoomResponse } from "../types/room.types";
+import type { Inventory } from "../types/inventory.types";
+import type { InventoryResponse } from "../api/inventory.api";
 import { ApiError } from "@/shared/types/apiError.types";
-import { getErrorMessage } from "@/helpers/error.helper";
+
 /* ================================
    Query Keys
 ================================ */
-export const ROOM_S_QUERY_KEY = ["rooms"];
+export const INVENTORY_QUERY_KEY = ["inventories"];
 
 /* ================================
-   Get Rooms
+   Get Inventories
 ================================ */
-export function useRooms(page?: number, limit?: number) {
-    return useQuery<RoomResponse, Error>({
-        queryKey: [...ROOM_S_QUERY_KEY, page, limit],
+export function useInventories(page?: number, limit?: number, search?: string) {
+    return useQuery<InventoryResponse, Error>({
+        queryKey: [...INVENTORY_QUERY_KEY, page, limit, search],
         queryFn: () => {
-            return fetchRooms(page, limit)
+            return fetchInventories(page, limit, search);
         },
         enabled: true,
     });
 }
 
 /* ================================
-   Create Room 
+   Create Inventory
 ================================ */
-export function useCreateRoom() {
+export function useCreateInventory() {
     const queryClient = useQueryClient();
 
-    return useMutation<Room, ApiError, Room>({
-        mutationFn: createRoom,
+    return useMutation<Inventory, ApiError, Inventory>({
+        mutationFn: createInventory,
 
         onSuccess: () => {
-            toast.success("Room created successfully");
+            toast.success("Inventory created successfully");
         },
 
         onError: (error) => {
             const errors = error.response?.data?.errors;
 
             if (!errors || !Array.isArray(errors) || !errors.some(err => err.path && err.path.length > 0)) {
-                const message = errors?.[0]?.message || error.message || "Failed to create room";
+                const message = errors?.[0]?.message || error.message || "Failed to create inventory";
                 toast.error(message);
             }
         },
 
         onSettled: () => {
             queryClient.invalidateQueries({
-                queryKey: ROOM_S_QUERY_KEY,
+                queryKey: INVENTORY_QUERY_KEY,
             });
         },
     });
 }
 
 /* ================================
-   Update Room 
+   Update Inventory
 ================================ */
-export function useUpdateRoom() {
+export function useUpdateInventory() {
     const queryClient = useQueryClient();
 
-    return useMutation<Room, ApiError, Room>({
-        mutationFn: updateRoom,
+    return useMutation<Inventory, ApiError, Inventory>({
+        mutationFn: updateInventory,
 
         onSuccess: () => {
-            toast.success("Room updated successfully");
+            toast.success("Inventory updated successfully");
         },
 
         onError: (error) => {
-            console.error("Failed to update room:", error);
+            console.error("Failed to update inventory:", error);
 
             const errors = error.response?.data?.errors;
 
-            // Only show toast for errors without specific field paths (general errors)
             if (!errors || !Array.isArray(errors) || !errors.some(err => err.path && err.path.length > 0)) {
-                const message = errors?.[0]?.message || error.message || "Failed to update room";
+                const message = errors?.[0]?.message || error.message || "Failed to update inventory";
                 toast.error(message);
             }
         },
 
         onSettled: () => {
             queryClient.invalidateQueries({
-                queryKey: ROOM_S_QUERY_KEY,
+                queryKey: INVENTORY_QUERY_KEY,
             });
         },
     });
 }
 
 /* ================================
-   Delete Room 
+   Delete Inventory
 ================================ */
-export function useDeleteRoom() {
+export function useDeleteInventory() {
     const queryClient = useQueryClient();
 
     return useMutation<void, ApiError, number>({
-        mutationFn: deleteRoom,
+        mutationFn: deleteInventory,
 
         onSuccess: () => {
-            toast.success("Room deleted successfully");
+            toast.success("Inventory deleted successfully");
         },
 
         onError: (error) => {
+            console.error("Failed to delete inventory:", error);
+
             const errors = error.response?.data?.errors;
-            const message = getErrorMessage(errors ?? [], "Failed to delete room");
+            const message = errors?.[0]?.message || error.message || "Failed to delete inventory";
 
             toast.error(message);
         },
 
         onSettled: () => {
             queryClient.invalidateQueries({
-                queryKey: ROOM_S_QUERY_KEY,
+                queryKey: INVENTORY_QUERY_KEY,
             });
         },
     });

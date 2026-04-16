@@ -8,11 +8,12 @@ import { Product, ProductResponse } from "../types/product.types";
  * @param category 
  * @returns 
  */
-export const fetchProducts = async (page = 1, limit = 10, search?: string, category?: string): Promise<ProductResponse> => {
+export const fetchProducts = async (page = 1, limit = 10, search?: string, category?: string, has_stock?: boolean): Promise<ProductResponse> => {
     const query = new URLSearchParams({ page: String(page), limit: String(limit), sort: "name" });
 
     if (category) query.append("category", category);
     if (search) query.append("search", search);
+    if (has_stock) query.append("stock", has_stock.toString());
 
     return await apiFetch<ProductResponse>(`/products?${query.toString()}`, {
         method: 'GET',

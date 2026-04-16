@@ -220,11 +220,11 @@ li[data-sonner-toast][data-type="error"] {
   }
 
   40% {
-    transform: scale(5.25);
+    transform: scale(3.25);
   }
 
   60% {
-    transform: scale(5);
+    transform: scale(3);
   }
 
   100% {

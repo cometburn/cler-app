@@ -8,7 +8,7 @@ import {
 } from "@/features/booking/api/booking.api";
 
 import { RoomRate } from "@/features/roomRate/types/roomRate.types";
-import { Booking } from "@/features/booking/types/booking.types";
+import { CreateBookingInput, UpdateBooking } from "@/features/booking/types/booking.types";
 import { ApiError } from "@/shared/types/apiError.types";
 import { toast } from "sonner";
 import { fetchRoomRatesByRoomType } from "@/features/roomRate/api/roomRate.api";
@@ -59,7 +59,7 @@ export function useRoomRatesByRoomType(id: number) {
 export function useCreateBooking() {
     const queryClient = useQueryClient();
 
-    return useMutation<Booking, ApiError, Booking>({
+    return useMutation<CreateBookingInput, ApiError, CreateBookingInput>({
         mutationFn: createBooking,
 
         onSuccess: () => {
@@ -90,7 +90,7 @@ export function useCreateBooking() {
 export function useUpdateBooking() {
     const queryClient = useQueryClient();
 
-    return useMutation<Booking, ApiError, Booking>({
+    return useMutation<UpdateBooking, ApiError, UpdateBooking>({
         mutationFn: updateBooking,
 
         onSuccess: () => {

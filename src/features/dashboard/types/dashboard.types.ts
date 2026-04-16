@@ -28,3 +28,17 @@ export interface DashboardRoomResponse {
         limit: number;
     };
 }
+
+export interface BookingBreakdownProps {
+    roomCharge: number;
+    extraPerson: number | null | undefined;
+    extraPersonRate: number;
+    overstayMinutes: number;
+    billedHours: number;
+    overstayRate: number;
+    overstayCharge: number;
+    addonsTotal?: number;
+    ordersTotal?: number;
+    bookingChargesTotal?: number;
+    total: number;
+}

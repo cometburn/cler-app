@@ -45,7 +45,7 @@ export const OrderItemForm = ({ bookingData }: OrderItemFormProps) => {
     const [orderItemLoading, setOrderItemLoading] = useState(false);
     const [selectedOrderItemName, setSelectedOrderItemName] = useState<string>("");
 
-    const debouncedSearch = useDebouncedValue(searchQuery, 300);
+    const debouncedSearch = useDebouncedValue(searchQuery, 500);
 
     const createMutation = useCreateOrderItem();
     const deleteMutation = useDeleteOrderItem();
@@ -116,7 +116,6 @@ export const OrderItemForm = ({ bookingData }: OrderItemFormProps) => {
                     setOrderItems(data.data);
                 }
             } catch (error) {
-                console.error("Error fetching products:", error);
                 if (!isCancelled) {
                     setOrderItems([]);
                 }
@@ -197,6 +196,7 @@ export const OrderItemForm = ({ bookingData }: OrderItemFormProps) => {
             <Form {...form}>
                 <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-[1fr_80px] gap-2 items-start">
+                        {/* Product */}
                         <FormField
                             control={form.control}
                             name="product_id"
@@ -245,12 +245,19 @@ export const OrderItemForm = ({ bookingData }: OrderItemFormProps) => {
                                                                         key={item.id}
                                                                         value={item.name}
                                                                         style={{ pointerEvents: 'auto' }}
+                                                                        disabled={item.inventory?.quantity === 0}
                                                                     >
                                                                         <div className="flex justify-between w-full">
                                                                             <span>{item.name}</span>
-                                                                            <span className="text-gray-500">
-                                                                                {Number(item.price).toFixed(2)}
-                                                                            </span>
+                                                                            {
+                                                                                item.inventory?.quantity && item.inventory?.quantity > 0 ?
+                                                                                    <span className="text-gray-500">
+                                                                                        {Number(item.price).toFixed(2)}
+                                                                                    </span>
+                                                                                    : <span className="text-red-500">
+                                                                                        Out of Stock
+                                                                                    </span>
+                                                                            }
                                                                         </div>
                                                                     </ComboboxItem>
                                                                 )}

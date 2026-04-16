@@ -20,6 +20,7 @@ import { FormProvider } from "react-hook-form";
 import { OrderItemForm } from "@/features/orderItem/components/OrderItemForm";
 import { cn } from "@/lib/utils";
 import { TransferBookingDialog } from "./TransferBookingDialog";
+import { formatCurrency } from "@/helpers/string.helper";
 
 interface CheckOutFormProps {
     open: boolean;
@@ -156,7 +157,7 @@ export const CheckOutForm = ({ open, setOpen, initialData, roomData }: CheckOutF
                                                         <TableRow key={charge.id}>
                                                             <TableCell className="text-left text-xs py-1 h-6">{charge.room?.name}</TableCell>
                                                             <TableCell className="text-xs py-1 h-6 max-w-0 overflow-hidden text-ellipsis whitespace-nowrap">{charge.name || ""}</TableCell>
-                                                            <TableCell className="text-right text-xs py-1 h-6">{Number(charge.price).toFixed(2)}</TableCell>
+                                                            <TableCell className="text-right text-xs py-1 h-6">{formatCurrency(Number(charge.price))}</TableCell>
                                                         </TableRow>
                                                     ))}
                                                 </TableBody>
@@ -190,7 +191,11 @@ export const CheckOutForm = ({ open, setOpen, initialData, roomData }: CheckOutF
                                 />
 
                                 {/* Total Amount */}
-                                <FormField
+                                <div className="flex flex-row items-center my-4">
+                                    <p className="flex-1 font-bold text-lg">Total Amount:</p>
+                                    <p className="flex-1 text-right text-4xl">{formatCurrency(total)}</p>
+                                </div>
+                                {/* <FormField
                                     control={form.control}
                                     name="total_price"
                                     render={({ field }) => (
@@ -210,7 +215,7 @@ export const CheckOutForm = ({ open, setOpen, initialData, roomData }: CheckOutF
                                             <FormMessage />
                                         </FormItem>
                                     )}
-                                />
+                                /> */}
                             </div>
                             <div>
                                 {/* Payment & Note */}

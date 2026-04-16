@@ -79,7 +79,7 @@ export const RoomPromoTable = () => {
                                 await updateMutation.mutateAsync(roomPromoSchema.parse(data));
                             }}
                             trigger={
-                                <Button variant="ghost" className="size-7 cursor-pointer float-right">
+                                <Button variant="ghost" className="text-gray-400 hover:text-gray-400 size-7 cursor-pointer float-right">
                                     <Pencil className="w-4 h-4" />
                                 </Button>
                             }

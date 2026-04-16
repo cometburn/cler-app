@@ -1,16 +1,6 @@
-interface BookingBreakdownProps {
-    roomCharge: number;
-    extraPerson: number | null | undefined;
-    extraPersonRate: number;
-    overstayMinutes: number;
-    billedHours: number;
-    overstayRate: number;
-    overstayCharge: number;
-    addonsTotal?: number;
-    ordersTotal?: number;
-    bookingChargesTotal?: number;
-    total: number;
-}
+import { formatCurrency } from "@/helpers/string.helper";
+import { BookingBreakdownProps } from "../types/dashboard.types";
+
 
 export const BookingBreakdown = ({
     roomCharge,
@@ -37,41 +27,41 @@ export const BookingBreakdown = ({
             <h5 className="border-b border-gray-200 pb-1 font-bold text-gray-400">Breakdown</h5>
             <div className="flex justify-between text-gray-600">
                 <span>Room Charge</span>
-                <span>{roomCharge.toFixed(2)}</span>
+                <span>{formatCurrency(roomCharge, { currencySymbol: "" })}</span>
             </div>
 
             {!!extraPerson && extraPerson > 0 && (
                 <div className="flex justify-between text-gray-600">
-                    <span>Extra Person ({extraPerson} pax x {extraPersonRate.toFixed(2)})</span>
-                    <span>{extraPersonCharge.toFixed(2)}</span>
+                    <span>Extra Person ({extraPerson} pax x {formatCurrency(extraPersonRate, { currencySymbol: "" })})</span>
+                    <span>{formatCurrency(extraPersonCharge, { currencySymbol: "" })}</span>
                 </div>
             )}
 
             {overstayMinutes > 0 && (
                 <div className="flex justify-between text-red-500">
-                    <span>Overstay ({formatOverstay(overstayMinutes)} → {billedHours}hr billed x {overstayRate.toFixed(2)})</span>
-                    <span>{overstayCharge.toFixed(2)}</span>
+                    <span>Overstay ({formatOverstay(overstayMinutes)} → {billedHours}hr billed x {formatCurrency(overstayRate, { currencySymbol: "" })})</span>
+                    <span>{formatCurrency(overstayCharge, { currencySymbol: "" })}</span>
                 </div>
             )}
 
             {addonsTotal > 0 && (
                 <div className="flex justify-between text-gray-600">
                     <span className="font-bold">Room Add-ons</span>
-                    <span>{addonsTotal.toFixed(2)}</span>
+                    <span>{formatCurrency(addonsTotal, { currencySymbol: "" })}</span>
                 </div>
             )}
 
             {bookingChargesTotal > 0 && (
                 <div className="flex justify-between text-gray-600">
                     <span className="font-bold">Booking Charges</span>
-                    <span>{bookingChargesTotal.toFixed(2)}</span>
+                    <span>{formatCurrency(bookingChargesTotal, { currencySymbol: "" })}</span>
                 </div>
             )}
 
             {ordersTotal > 0 && (
                 <div className="flex justify-between text-gray-600">
                     <span className="font-bold">Orders</span>
-                    <span>{ordersTotal.toFixed(2)}</span>
+                    <span>{formatCurrency(ordersTotal, { currencySymbol: "" })}</span>
                 </div>
             )}
 

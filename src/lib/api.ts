@@ -123,6 +123,8 @@ export async function apiFetch<T = unknown>(
         }
     }
 
+
+
     // Handle other errors
     if (!response.ok) {
         let message = "Something went wrong";

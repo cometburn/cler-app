@@ -50,6 +50,7 @@ export const Dashboard = () => {
       // Trigger highlight
       setHighlightedRooms((prev) => ({ ...prev, [data.room_id]: 'checkin' }));   // or 'checkout'
       setTimeout(() => {
+
         setHighlightedRooms((prev) => {
           const next = { ...prev };
           delete next[data.room_id];

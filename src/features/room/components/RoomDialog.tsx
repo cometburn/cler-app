@@ -188,7 +188,11 @@ export const RoomDialog = ({
                                 <FormItem>
                                     <FormLabel>Floor</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Enter floor" {...field} />
+                                        <Input
+                                            placeholder="Enter floor"
+                                            {...field}
+                                            value={field.value ?? ""}
+                                        />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -236,7 +240,11 @@ export const RoomDialog = ({
                                 <FormItem>
                                     <FormLabel>Note</FormLabel>
                                     <FormControl>
-                                        <Textarea placeholder="Enter note" {...field} />
+                                        <Textarea
+                                            placeholder="Enter note"
+                                            {...field}
+                                            value={field.value ?? ""}
+                                        />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
