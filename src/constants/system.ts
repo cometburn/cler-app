@@ -35,6 +35,11 @@ export const MENU_ITEMS = [
     icon: Package,
   },
   {
+    title: "Product Movements",
+    url: "/product-movements",
+    icon: Package,
+  },
+  {
     title: "Inventory",
     url: "/inventory",
     icon: PackageOpenIcon,
