@@ -7,13 +7,6 @@ import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import {
     Dialog,
     DialogContent,
     DialogDescription,
@@ -67,6 +60,7 @@ export const ProductMovementDialog = ({
             product_id: 0,
             type: mode,
             quantity: 0,
+            unit_cost: 0,
             note: "",
         }),
         [mode]
@@ -106,7 +100,7 @@ export const ProductMovementDialog = ({
         const loadProducts = async () => {
             setOrderItemLoading(true);
             try {
-                const data = await fetchProducts(page, limit, debouncedSearch, "product", true);
+                const data = await fetchProducts(page, limit, debouncedSearch, "product");
                 if (!isCancelled) {
                     setOrderItems(data.data);
                 }
@@ -166,12 +160,12 @@ export const ProductMovementDialog = ({
                     <div>
                         <DialogHeader className="mb-4">
                             <DialogTitle>
-                                {mode === "in" ? "Add Inventory" : "Edit Inventory"}
+                                {mode === "in" ? "Add Product Movement" : "Edit Product Movement"}
                             </DialogTitle>
                             <DialogDescription className="text-xs">
                                 {mode === "in"
-                                    ? "Fill out the form to add Inventory."
-                                    : "Update the Inventory details below."}
+                                    ? "Fill out the form to add Product Movement."
+                                    : "Update the Product Movement details below."}
                             </DialogDescription>
                         </DialogHeader>
                         <Form {...form}>
@@ -246,26 +240,53 @@ export const ProductMovementDialog = ({
                                     }}
                                 />
 
-                                {/* Qty */}
-                                <FormField
-                                    control={form.control}
-                                    name="quantity"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Quantity</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    type="number"
-                                                    value={field.value}
-                                                    onChange={(e) =>
-                                                        field.onChange(Number(e.target.value) || 0)
-                                                    }
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                    {/* Qty */}
+                                    <FormField
+                                        control={form.control}
+                                        name="quantity"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Quantity</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        type="number"
+                                                        min={0}
+                                                        value={field.value ?? ""}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value === "" ? undefined : Number(e.target.value);
+                                                            field.onChange(Number(value) || 0)
+                                                        }}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+
+                                    {/* Qty */}
+                                    <FormField
+                                        control={form.control}
+                                        name="unit_cost"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Unit Cost</FormLabel>
+                                                <FormControl>
+                                                    <Input
+                                                        type="number"
+                                                        min={0}
+                                                        value={field.value ?? ""}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value === "" ? undefined : Number(e.target.value);
+                                                            field.onChange(Number(value) || 0)
+                                                        }}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
 
                                 {/* Note */}
                                 <FormField
@@ -279,7 +300,7 @@ export const ProductMovementDialog = ({
                                                     {...field}
                                                     value={field.value ?? ""}
                                                     rows={6}
-                                                    className="h-40"
+                                                    className="h-30"
                                                 />
                                             </FormControl>
                                             <FormMessage />
@@ -302,7 +323,7 @@ export const ProductMovementDialog = ({
                                         type="submit"
                                         className="flex-1 bg-green-500 hover:bg-green-600"
                                     >
-                                        {mode === "add" ? "Save" : "Update"}
+                                        {mode === "in" ? "Save" : "Update"}
                                     </Button>
                                 </div>
                             </form>
