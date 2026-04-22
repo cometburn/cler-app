@@ -23,8 +23,6 @@ export const InventoryTable = () => {
         columns: [
             { accessorKey: "product.name", header: "Product" },
             { accessorKey: "quantity", header: "Quantity" },
-            // { accessorKey: "reserved_qty", header: "Reserved" },
-            // { accessorKey: "action", header: "" },
         ],
         pageCount: Math.ceil((data?.meta.total ?? 0) / limit),
         manualPagination: true,
@@ -60,7 +58,7 @@ export const InventoryTable = () => {
         <div className="md:max-w-7xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-3 mb-4">
                 <Input
-                    placeholder="Search inventory"
+                    placeholder="Search"
                     value={searchQuery}
                     onChange={handleSearch}
                     className="w-full bg-white"

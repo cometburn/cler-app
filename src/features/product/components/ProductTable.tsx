@@ -28,7 +28,7 @@ export const ProductTable = () => {
     const table = useReactTable({
         data: data?.data ?? [],
         columns: [
-            { accessorKey: "name", header: "Name" },
+            { accessorKey: "name", header: "Product" },
             { accessorKey: "price", header: "Price" },
             { accessorKey: "category", header: "Category" },
             { accessorKey: "action", header: "" },
@@ -103,7 +103,7 @@ export const ProductTable = () => {
         <div className="md:max-w-7xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-3 mb-4">
                 <Input
-                    placeholder="Search product"
+                    placeholder="Search"
                     value={searchQuery}
                     onChange={handleSearch}
                     className="w-full bg-white"

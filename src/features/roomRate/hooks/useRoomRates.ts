@@ -10,6 +10,12 @@ import { toast } from "sonner";
 
 const ROOM_RATES_QUERY_KEY = ["roomRates"];
 
+/**
+ * Fetch room rates
+ * @param page 
+ * @param limit 
+ * @returns 
+ */
 export function useRoomRates(page: number, limit: number) {
     return useQuery<RoomRateResponse, Error>({
         queryKey: [...ROOM_RATES_QUERY_KEY, page, limit],
@@ -18,6 +24,10 @@ export function useRoomRates(page: number, limit: number) {
 }
 
 
+/**
+ * Create room rate
+ * @returns 
+ */
 export function useCreateRoomRate() {
     const queryClient = useQueryClient();
 
@@ -42,6 +52,10 @@ export function useCreateRoomRate() {
 }
 
 
+/**
+ * Update room rate
+ * @returns 
+ */
 export function useUpdateRoomRate() {
     const queryClient = useQueryClient();
 
@@ -65,7 +79,10 @@ export function useUpdateRoomRate() {
     });
 }
 
-
+/**
+ * Delete room rate
+ * @returns 
+ */
 export function useDeleteRoomRate() {
     const queryClient = useQueryClient();
 

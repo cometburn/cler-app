@@ -44,6 +44,7 @@ export const OrderItemForm = ({ bookingData }: OrderItemFormProps) => {
     const [orderItems, setOrderItems] = useState<Product[]>([]);
     const [orderItemLoading, setOrderItemLoading] = useState(false);
     const [selectedOrderItemName, setSelectedOrderItemName] = useState<string>("");
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
     const debouncedSearch = useDebouncedValue(searchQuery, 500);
 
@@ -84,12 +85,13 @@ export const OrderItemForm = ({ bookingData }: OrderItemFormProps) => {
 
     useEffect(() => {
         if (selectedProductId && quantity) {
-            const selectedProduct = orderItems.find(p => p.id === selectedProductId);
-            if (selectedProduct?.price) {
-                const price = Number(selectedProduct.price);
+            const filteredProduct = orderItems.find(p => p.id === selectedProductId);
+            if (filteredProduct?.price) {
+                const price = Number(filteredProduct.price);
                 const totalPrice = price * quantity;
 
-                console.log('selectedProduct', selectedProduct);
+                setSelectedProduct(filteredProduct)
+                console.log('selectedProduct', filteredProduct);
                 console.log('price', price);
                 console.log('totalPrice', totalPrice);
 
@@ -133,7 +135,17 @@ export const OrderItemForm = ({ bookingData }: OrderItemFormProps) => {
         };
     }, [debouncedSearch, page, limit]);
 
-    const handleQuantityChange = (value: number) => value;
+    const handleQuantityChange = (value: number) => {
+        if (!selectedProduct) return 1;
+
+        if (!value) return 1
+
+        if (selectedProduct?.inventory?.quantity && value > (selectedProduct.inventory.quantity - selectedProduct.inventory.reserved_qty)) {
+            return selectedProduct.inventory.quantity - selectedProduct.inventory.reserved_qty
+        } else {
+            return value
+        }
+    };
 
     /**
      * Handle order item submission - POST to order items API
@@ -169,8 +181,6 @@ export const OrderItemForm = ({ bookingData }: OrderItemFormProps) => {
             // Get current order_items from parent form
             const currentOrderItems = parentForm.getValues("orders.order_items") || [];
 
-            console.log("result", result);
-
             // Add the new order item with the result data (includes id from backend)
             const updatedOrderItems = [...currentOrderItems, result];
 
@@ -184,6 +194,7 @@ export const OrderItemForm = ({ bookingData }: OrderItemFormProps) => {
             form.reset(defaultValues);
             setSelectedOrderItemName("");
             setSearchQuery("");
+            setSelectedProduct(null);
 
         } catch (error) {
             console.error('Error creating order item:', error);
@@ -195,7 +206,7 @@ export const OrderItemForm = ({ bookingData }: OrderItemFormProps) => {
         <div className="flex flex-col gap-4 my-4">
             <Form {...form}>
                 <div className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-[1fr_80px] gap-2 items-start">
+                    <div className="grid grid-cols-1 md:grid-cols-[1fr_90px] gap-2 items-start">
                         {/* Product */}
                         <FormField
                             control={form.control}
@@ -245,19 +256,19 @@ export const OrderItemForm = ({ bookingData }: OrderItemFormProps) => {
                                                                         key={item.id}
                                                                         value={item.name}
                                                                         style={{ pointerEvents: 'auto' }}
-                                                                        disabled={item.inventory?.quantity === 0}
+                                                                        disabled={item.track_stock && (!item.inventory || item.inventory.quantity === 0)}
                                                                     >
                                                                         <div className="flex justify-between w-full">
                                                                             <span>{item.name}</span>
-                                                                            {
-                                                                                item.inventory?.quantity && item.inventory?.quantity > 0 ?
+                                                                            {item.track_stock && (
+                                                                                item.inventory && item.inventory.quantity > 0 ? (
                                                                                     <span className="text-gray-500">
                                                                                         {Number(item.price).toFixed(2)}
                                                                                     </span>
-                                                                                    : <span className="text-red-500">
-                                                                                        Out of Stock
-                                                                                    </span>
-                                                                            }
+                                                                                ) : (
+                                                                                    <span className="text-red-500">Out of Stock</span>
+                                                                                )
+                                                                            )}
                                                                         </div>
                                                                     </ComboboxItem>
                                                                 )}
@@ -287,6 +298,7 @@ export const OrderItemForm = ({ bookingData }: OrderItemFormProps) => {
                                                 value={field.value ? String(field.value) : ""}
                                                 onChange={(e) => field.onChange(handleQuantityChange(Number(e.target.value)))}
                                             />
+
                                         </FormControl>
                                     </FormItem>
                                 )}

@@ -1,4 +1,5 @@
 import { productSchema } from "@/features/product/types/product.types";
+import { userSchema } from "@/shared/types/user.types";
 import { z } from "zod";
 
 export const orderItemSchema = z
@@ -11,6 +12,9 @@ export const orderItemSchema = z
         total_price: z.number({ message: "Total price is required" }).positive(),
         notes: z.string().optional().nullable(),
         product: productSchema.partial().optional(),
+        created_at: z.string().optional(),
+        updated_at: z.string().optional(),
+        user: userSchema.partial().optional(),
     });
 
 export type OrderItem = z.infer<typeof orderItemSchema>;
