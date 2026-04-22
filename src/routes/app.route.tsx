@@ -10,6 +10,7 @@ import { RoomRoutes } from "./room.route";
 import { DefaultLayout } from "@/layouts/DefaultLayout";
 import { InventoryRoutes } from "./inventory.route";
 import { ProductRoutes } from "./product.route";
+import { ProductMovementRoutes } from "./productMovement.route";
 
 export const router = createHashRouter([
   {
@@ -49,6 +50,10 @@ export const router = createHashRouter([
           {
             path: "products/*",
             element: <ProductRoutes />,
+          },
+          {
+            path: "product-movements/*",
+            element: <ProductMovementRoutes />,
           },
         ]
       }
