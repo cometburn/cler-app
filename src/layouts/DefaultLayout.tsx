@@ -18,32 +18,15 @@ const routeTitleMap: Record<string, string> = [
   return acc;
 }, {} as Record<string, string>);
 
-const sidebarOpenInitialState = true;
-const sidebarOpenReducer = (state: boolean) => !state;
-
-const init = () => {
-  return localStorage.getItem("sidebarOpen") ? localStorage.getItem("sidebarOpen") === "true" : sidebarOpenInitialState;
-}
-
 export const DefaultLayout = () => {
   const { data: user, isLoading: isUserLoading } = useMe();
   const location = useLocation();
   const [pageTitle, setPageTitle] = useState("Dashboard");
-  const [sidebarOpen, setSidebarOpen] = useReducer(sidebarOpenReducer, sidebarOpenInitialState, init);
 
   useEffect(() => {
     const title = routeTitleMap[location.pathname] || "Dashboard";
     setPageTitle(title);
   }, [location.pathname]);
-
-  useEffect(() => {
-    localStorage.setItem("sidebarOpen", String(sidebarOpen));
-  }, [sidebarOpen]);
-
-
-  const toggleSidebar = () => {
-    setSidebarOpen();
-  };
 
   if (isUserLoading) {
     return (
@@ -57,16 +40,14 @@ export const DefaultLayout = () => {
   const hasNoHotels = user?.hotels?.length === 0;
 
   return (
-    <SidebarProvider open={sidebarOpen} className="border-0 border-transparent">
+    <SidebarProvider className="border-0 border-transparent">
       <AppSidebar />
       <main className="flex flex-1 flex-col">
-        <Topbar pageTitle={pageTitle} toggleSidebar={toggleSidebar} />
-
+        <Topbar pageTitle={pageTitle} />
         <div className="flex-1 py-6 px-4">
           <Outlet />
         </div>
       </main>
-
       {user && isAdmin && hasNoHotels && <CreateHotelDialog />}
     </SidebarProvider>
   );
