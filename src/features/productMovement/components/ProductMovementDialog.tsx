@@ -252,10 +252,13 @@ export const ProductMovementDialog = ({
                                                     <Input
                                                         type="number"
                                                         min={0}
-                                                        value={field.value ?? ""}
-                                                        onChange={(e) => {
-                                                            const value = e.target.value === "" ? undefined : Number(e.target.value);
-                                                            field.onChange(Number(value) || 0)
+                                                        max={999}
+                                                        value={field.value ? String(field.value) : ""}
+                                                        onChange={(e) => field.onChange(Number(e.target.value) || 0)}
+                                                        onInput={(e) => {
+                                                            const target = e.target as HTMLInputElement;
+                                                            if (Number(target.value) > 999) target.value = "999";
+                                                            if (Number(target.value) < 0) target.value = "0";
                                                         }}
                                                     />
                                                 </FormControl>
@@ -275,10 +278,13 @@ export const ProductMovementDialog = ({
                                                     <Input
                                                         type="number"
                                                         min={0}
-                                                        value={field.value ?? ""}
-                                                        onChange={(e) => {
-                                                            const value = e.target.value === "" ? undefined : Number(e.target.value);
-                                                            field.onChange(Number(value) || 0)
+                                                        max={999999}
+                                                        value={field.value ? String(field.value) : ""}
+                                                        onChange={(e) => field.onChange(Number(e.target.value) || 0)}
+                                                        onInput={(e) => {
+                                                            const target = e.target as HTMLInputElement;
+                                                            if (Number(target.value) > 999999) target.value = "999999";
+                                                            if (Number(target.value) < 0) target.value = "0";
                                                         }}
                                                     />
                                                 </FormControl>

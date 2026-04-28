@@ -4,7 +4,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@
 import { LoaderCircle, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Pagination } from "@/components/layouts/Pagination";
-import { useProductMovements, useCreateProductMovement } from "../hooks/useProductMovements";
+import { useProductMovements, useCreateProductMovement, useUpdateProductMovement } from "../hooks/useProductMovements";
 import { ProductMovement, productMovementSchema } from "../types/productMovement.types";
 import { formatCurrency, removeUnderscore } from "@/helpers/string.helper";
 import { ProductMovementDialog } from "./ProductMovementDialog";
@@ -24,6 +24,7 @@ export const ProductMovementTable = () => {
 
     const { data, isLoading } = useProductMovements(page, limit, debouncedSearch);
     const createMutation = useCreateProductMovement();
+    const updateMutation = useUpdateProductMovement();
 
     const table = useReactTable({
         data: data?.data ?? [],
@@ -32,6 +33,11 @@ export const ProductMovementTable = () => {
             { accessorKey: "type", header: "Type" },
             { accessorKey: "quantity", header: "Quantity" },
             { accessorKey: "unit_cost", header: "Unit Cost" },
+            {
+                id: "total_cost",
+                header: "Total Cost",
+                accessorFn: (row) => row.quantity * row.unit_cost,
+            },
             { accessorKey: "action", header: "" },
         ],
         pageCount: Math.ceil((data?.meta.total ?? 0) / limit),
@@ -45,13 +51,23 @@ export const ProductMovementTable = () => {
     const renderCellContent = (index: number, row: Row<ProductMovement>, cell: Cell<ProductMovement, unknown>) => {
         switch (true) {
             case cell.column.id === "quantity":
+                return (
+                    <TableCell key={cell.id} className="capitalize text-right">
+                        {cell.getValue() as number}
+                    </TableCell>
+                )
             case cell.column.id === "unit_cost":
                 return (
                     <TableCell key={cell.id} className="capitalize text-right">
                         {formatCurrency(cell.getValue() as number, { currencySymbol: "" })}
                     </TableCell>
                 )
-
+            case cell.column.id === "total_cost":
+                return (
+                    <TableCell key={cell.id} className="text-right">
+                        {formatCurrency(cell.getValue() as number, { currencySymbol: "" })}
+                    </TableCell>
+                );
             case cell.column.id === "type":
                 return (
                     <TableCell key={cell.id} className="capitalize">
@@ -65,7 +81,7 @@ export const ProductMovementTable = () => {
                         </Badge>
                     </TableCell>
                 );
-            case index === 3:
+            case index === 5 && row.original.type === "in":
                 return (
                     <TableCell key={cell.id}>
 
@@ -90,8 +106,11 @@ export const ProductMovementTable = () => {
     };
 
     const handleSubmit = async (mode: 'add' | 'edit', data: ProductMovement) => {
+        console.log('mode', mode)
         if (mode === 'add') {
             await createMutation.mutateAsync(productMovementSchema.parse(data));
+        } else {
+            await updateMutation.mutateAsync(productMovementSchema.parse(data));
         }
     }
 
@@ -124,12 +143,13 @@ export const ProductMovementTable = () => {
                                 switch (index) {
                                     case 2:
                                     case 3:
+                                    case 4:
                                         return (
                                             <TableHead key={header.id} className="text-xs text-right">
                                                 {flexRender(header.column.columnDef.header, header.getContext())}
                                             </TableHead>
                                         )
-                                    case 4:
+                                    case 5:
                                         return (
                                             <TableHead key={header.id} className="text-xs">
                                                 <ProductMovementDialog
@@ -160,15 +180,26 @@ export const ProductMovementTable = () => {
                         </TableRow>
                     ) : table.getRowModel().rows.length ? (
                         table.getRowModel().rows.map(row => (
-                            <TableRow
-                                key={row.id}
-                                onClick={() => handleProductMovementClick(row.original)}
-                                className="cursor-pointer"
-                            >
-                                {row.getVisibleCells().map((cell, index) => {
-                                    return renderCellContent(index, row, cell)
-                                })}
-                            </TableRow>
+                            row.original.type === "in" ? (
+                                <TableRow
+                                    key={row.id}
+                                    className="cursor-pointer"
+                                >
+                                    {row.getVisibleCells().map((cell, index) => {
+                                        return renderCellContent(index, row, cell)
+                                    })}
+                                </TableRow>
+                            ) : (
+                                <TableRow
+                                    key={row.id}
+                                    onClick={() => handleProductMovementClick(row.original)}
+                                    className="cursor-pointer"
+                                >
+                                    {row.getVisibleCells().map((cell, index) => {
+                                        return renderCellContent(index, row, cell)
+                                    })}
+                                </TableRow>
+                            )
                         ))
                     ) : (
                         <TableRow>
