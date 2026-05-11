@@ -48,7 +48,7 @@ export const useCheckOutForm = ({ open, setOpen, initialData, roomData }: UseChe
             extra_person: 0,
             note: null,
             booking_addons: [],
-            orders: null,
+            orders: {},
         }),
         []
     );

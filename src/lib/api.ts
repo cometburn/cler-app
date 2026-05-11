@@ -66,7 +66,7 @@ export async function apiFetch<T = unknown>(
     let response = await fetch(`${API_BASE_URL}${endpoint}`, {
         ...options,
         headers: getHeaders(),
-        credentials: "include",
+        credentials: "include"
     });
 
     // Handle 401 → token refresh
