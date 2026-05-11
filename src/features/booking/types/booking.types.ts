@@ -3,6 +3,9 @@ import { BOOKING_STATUS, PAYMENT_STATUS, PAYMENT_TYPE } from "@/constants/system
 import { BookingAddon } from "@/features/bookingAddon/types/bookingAddon.types";
 import { Order } from "@/features/order/types/order.types";
 import { BookingCharge, bookingChargeSchema } from "@/features/bookingCharge/types/bookingCharge.types";
+import { Room, roomSchema } from "@/features/room/types/room.types";
+import { RoomRate } from "@/features/roomRate/types/roomRate.types";
+import { User } from "@/shared/types/user.types";
 
 
 // Booking addon schema for input (used in forms)
@@ -22,7 +25,7 @@ const bookingAddonInputSchema = z.object({
 const orderInputSchema = z.object({
     id: z.number().optional(),
     hotel_id: z.number().optional(),
-    booking_id: z.number().optional(),
+    booking_id: z.number().optional().nullable(),
     status: z.string().optional(),
     total_price: z.number().optional(),
     notes: z.string().optional().nullable(),
@@ -76,6 +79,7 @@ export const updateBookingSchema = baseBookingSchema.extend({
     booking_addons: z.array(bookingAddonInputSchema).optional(),
     orders: orderInputSchema,
     booking_charges: z.array(bookingChargeSchema).optional(),
+    room: roomSchema.optional(),
 });
 
 // ==========================================
@@ -156,9 +160,9 @@ export type Booking = {
     created_at?: Date;
     updated_at?: Date;
     // Relations
-    room?: any;
-    room_rate?: any;
-    user?: any;
+    room?: Room;
+    room_rate?: RoomRate;
+    user?: User;
 };
 
 // ==========================================

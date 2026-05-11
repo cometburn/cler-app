@@ -31,6 +31,7 @@ export function useInventories(page?: number, limit?: number, search?: string) {
             return fetchInventories(page, limit, search);
         },
         enabled: true,
+        refetchOnMount: "always",
     });
 }
 

@@ -7,7 +7,7 @@ import {
 import { OrderItem, OrderItemResponse } from "../types/orderItem.types";
 import { toast } from "sonner";
 
-const BOOKING_ADDON_QUERY_KEY = ["booking_addons"];
+const ORDER_ITEM_QUERY_KEY = ["booking_addons"];
 
 /**
  * Fetch order items by booking id
@@ -16,7 +16,7 @@ const BOOKING_ADDON_QUERY_KEY = ["booking_addons"];
  */
 export function useOrderItems(bookingId: number) {
     return useQuery<OrderItemResponse, Error>({
-        queryKey: [...BOOKING_ADDON_QUERY_KEY, bookingId],
+        queryKey: [...ORDER_ITEM_QUERY_KEY, bookingId],
         queryFn: () => {
             return fetchOrderItems(bookingId)
         },
@@ -35,21 +35,21 @@ export function useCreateOrderItem() {
         mutationFn: createOrderItem,
 
         onSuccess: (data) => {
-            toast.success("Addon created successfully");
+            toast.success("Item added successfully");
 
             queryClient.invalidateQueries({
-                queryKey: [...BOOKING_ADDON_QUERY_KEY, data.order_id],
+                queryKey: [...ORDER_ITEM_QUERY_KEY, data.order_id],
             });
         },
 
         onError: (error) => {
-            console.error("Failed to create addon:", error);
-            toast.error(error.message || "Failed to create addon");
+            console.error("Failed to create item:", error);
+            toast.error(error.message || "Failed to create item");
         },
 
         onSettled: () => {
             queryClient.invalidateQueries({
-                queryKey: [...BOOKING_ADDON_QUERY_KEY, "booking"],
+                queryKey: [...ORDER_ITEM_QUERY_KEY, "booking"],
             });
         },
     });
@@ -76,7 +76,7 @@ export function useDeleteOrderItem() {
 
         onSettled: () => {
             queryClient.invalidateQueries({
-                queryKey: BOOKING_ADDON_QUERY_KEY,
+                queryKey: ORDER_ITEM_QUERY_KEY,
             });
         },
     });

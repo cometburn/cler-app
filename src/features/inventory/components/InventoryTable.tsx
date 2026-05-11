@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Cell, flexRender, getCoreRowModel, Row, useReactTable } from "@tanstack/react-table";
+import { Cell, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { LoaderCircle } from "lucide-react";
 import { Pagination } from "@/components/layouts/Pagination";
@@ -8,7 +8,6 @@ import { Inventory } from "../types/inventory.types";
 import { cn } from "@/lib/utils";
 import { useDebouncedValue } from "@/helpers/debounce.helper";
 import { Input } from "@/components/ui/input";
-import { ProductMovement } from "@/features/productMovement/types/productMovement.types";
 
 export const InventoryTable = () => {
     const [page, setPage] = useState(1);
@@ -32,22 +31,13 @@ export const InventoryTable = () => {
         getCoreRowModel: getCoreRowModel(),
     });
 
-    const renderCellContent = (index: number, row: Row<Inventory>, cell: Cell<Inventory, unknown>) => {
+    const renderCellContent = (index: number, cell: Cell<Inventory, unknown>) => {
         return (
             <TableCell key={cell.id} className={cn("text-right", index === 1 || index === 2 ? "text-right" : "text-left")}>
                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
             </TableCell>
         );
     };
-
-    const handleSubmit = async (mode: 'in' | 'adjustment', data: ProductMovement) => {
-        // data.track_stock = data.category === 'product' ? data.track_stock : false;
-        // if (mode === 'add') {
-        //     await createMutation.mutateAsync(productSchema.parse(data));
-        // } else {
-        //     await updateMutation.mutateAsync(productSchema.parse(data));
-        // }
-    }
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
@@ -102,7 +92,7 @@ export const InventoryTable = () => {
                         table.getRowModel().rows.map(row => (
                             <TableRow key={row.id}>
                                 {row.getVisibleCells().map((cell, index) => {
-                                    return renderCellContent(index, row, cell)
+                                    return renderCellContent(index, cell)
                                 })}
                             </TableRow>
                         ))

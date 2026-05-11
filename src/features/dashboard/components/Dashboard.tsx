@@ -1,3 +1,4 @@
+import { useSearchParams } from "react-router-dom";
 import { createSocket } from "@/lib/socket";
 import { useUser } from "@/shared/hooks/useUser";
 import { useEffect, useState } from "react";
@@ -13,8 +14,13 @@ import { ALARM_PERIOD } from "@/constants/system";
 
 export const Dashboard = () => {
   const { user, defaultHotelId, isLoading, error } = useUser();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const roomIdParam = searchParams.get("room_id");
+  const tabParam = searchParams.get("tab") ?? "";
+
   const { data: dashboardRooms, isLoading: roomsLoading } = useDashboard();
 
+  // const rooms = dashboardRooms?.data ?? [];
   const [rooms, setRooms] = useState<DashboardRoom[]>([]);
   const [_socket, setSocket] = useState<Socket | null>(null);
   const [_now, setNow] = useState(Date.now());
@@ -29,8 +35,13 @@ export const Dashboard = () => {
   useEffect(() => {
     if (dashboardRooms?.data) {
       setRooms(dashboardRooms.data);
+      console.log('rooms', rooms)
     }
-  }, [dashboardRooms?.data]);
+  }, [dashboardRooms?.data, rooms]);
+
+  useEffect(() => {
+    console.log('roomIdParam', roomIdParam)
+  }, [roomIdParam]);
 
   useEffect(() => {
     const socketInstance = createSocket();
@@ -123,6 +134,13 @@ export const Dashboard = () => {
             mode={hasBooking ? 'edit' : 'add'}
             bookingId={booking?.id ?? 0}
             roomData={room}
+            defaultOpen={roomIdParam ? Number(roomIdParam) === room.id : false}
+            defaultTab={tabParam ?? "order"}
+            onOpenChange={(open) => {
+              if (!open && roomIdParam) {
+                setSearchParams({});
+              }
+            }}
             trigger={
               <Button
                 className={`

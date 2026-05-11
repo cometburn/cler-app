@@ -10,7 +10,7 @@ let failedQueue: Array<{
     options: RequestInit;
 }> = [];
 
-const processQueue = (error: any = null, newToken: string | null = null) => {
+const processQueue = (error: unknown = null) => {
     failedQueue.forEach((prom) => {
         if (error) {
             prom.reject(error);
@@ -90,7 +90,7 @@ export async function apiFetch<T = unknown>(
                 localStorage.setItem("token", accessToken);
 
                 // Process queued requests with new token
-                processQueue(null, accessToken);
+                processQueue(null);
 
                 // Retry the original request with new token
                 const retryHeaders = getHeaders();

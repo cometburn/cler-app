@@ -38,7 +38,6 @@ import { Switch } from "@/components/ui/switch";
 import { removeUnderscore } from "@/helpers/string.helper";
 import { cn } from "@/lib/utils";
 import { formatDate } from "@/helpers/date.helper";
-import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ProductDialogProps {

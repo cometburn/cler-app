@@ -1,6 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
 import { useForm, useFormContext, useWatch } from "react-hook-form";
-import { Product } from "../../product/types/product.types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+
+import { LoaderCircle, MinusIcon, Plus, PlusIcon } from "lucide-react";
+
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import {
     Combobox,
@@ -23,21 +27,21 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-import { LoaderCircle, Plus } from "lucide-react";
-import { useDebouncedValue } from "@/helpers/debounce.helper";
-import { fetchProducts } from "@/features/product/api/product.api";
-import { OrderItem, orderItemSchema } from "../types/orderItem.types";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Booking } from "@/features/booking/types/booking.types";
-import { useCreateOrderItem, useDeleteOrderItem } from "../hooks/useOrderItems";
 import { ConfirmDeleteDialog } from "@/components/dialogs/ConfirmDeleteDialog";
-import { toast } from "sonner";
 
-interface OrderItemFormProps {
-    bookingData?: Partial<Booking> | null;
+import { fetchProducts } from "@/features/product/api/product.api";
+
+import { DirectOrderItem, OrderItem, directOrderItemSchema } from "../types/orderItem.types";
+import { Product } from "../../product/types/product.types";
+import { DirectOrder } from "@/features/order/types/order.types";
+import { formatCurrency } from "@/helpers/string.helper";
+import { useDebouncedValue } from "@/helpers/debounce.helper";
+
+interface DirectOrderItemFormProps {
+    orderData?: Partial<DirectOrder> | null;
 }
 
-export const OrderItemForm = ({ bookingData }: OrderItemFormProps) => {
+export const DirectOrderItemForm = ({ orderData }: DirectOrderItemFormProps) => {
     const [page, _setPage] = useState(1);
     const [limit, _setLimit] = useState(10);
     const [searchQuery, setSearchQuery] = useState("");
@@ -45,35 +49,31 @@ export const OrderItemForm = ({ bookingData }: OrderItemFormProps) => {
     const [orderItemLoading, setOrderItemLoading] = useState(false);
     const [selectedOrderItemName, setSelectedOrderItemName] = useState<string>("");
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-
+    const [grandTotal, setGrandTotal] = useState<number>(0);
     const debouncedSearch = useDebouncedValue(searchQuery, 500);
 
-    const createMutation = useCreateOrderItem();
-    const deleteMutation = useDeleteOrderItem();
+    const parentForm = useFormContext<DirectOrder>();
 
-    const parentForm = useFormContext<Booking>();
-
-    // Watch the nested order_items path
     const orderItemsList = useWatch({
         control: parentForm.control,
-        name: "orders.order_items",
+        name: "order_items",
         defaultValue: [],
     }) || [];
 
     const defaultValues = useMemo<Partial<OrderItem>>(
         () => ({
-            order_id: bookingData?.orders?.id,
+            order_id: orderData?.id,
             product_id: undefined,
             quantity: 1,
             unit_price: 0,
             total_price: 0,
             product: undefined,
         }),
-        [bookingData]
+        [orderData]
     );
 
-    const form = useForm<OrderItem>({
-        resolver: zodResolver(orderItemSchema),
+    const form = useForm<DirectOrderItem>({
+        resolver: zodResolver(directOrderItemSchema),
         defaultValues,
         mode: "onSubmit",
         shouldUnregister: false,
@@ -91,9 +91,6 @@ export const OrderItemForm = ({ bookingData }: OrderItemFormProps) => {
                 const totalPrice = price * quantity;
 
                 setSelectedProduct(filteredProduct)
-                console.log('selectedProduct', filteredProduct);
-                console.log('price', price);
-                console.log('totalPrice', totalPrice);
 
                 form.setValue("price", price, { shouldValidate: false });
                 form.setValue("total_price", totalPrice, { shouldValidate: false });
@@ -135,6 +132,12 @@ export const OrderItemForm = ({ bookingData }: OrderItemFormProps) => {
         };
     }, [debouncedSearch, page, limit]);
 
+    useEffect(() => {
+        const total = orderItemsList.reduce((acc, item) => acc + item.total_price, 0);
+        setGrandTotal(total);
+        parentForm.setValue("total_price", total, { shouldValidate: true, shouldDirty: true });
+    }, [orderItemsList])
+
     const handleQuantityChange = (value: number) => {
         if (!selectedProduct) return 1;
 
@@ -147,63 +150,87 @@ export const OrderItemForm = ({ bookingData }: OrderItemFormProps) => {
         }
     };
 
-    /**
-     * Handle order item submission - POST to order items API
-     */
-    const handleSubmit = async (values: OrderItem) => {
-        // Find the selected product to ensure we have the latest price
-        const selectedProduct = orderItems.find(p => p.id === values.product_id);
+    const handleOrderItemQuantityChange = (index: number, newQuantity: number) => {
+        if (newQuantity < 1) return;
 
+        const currentItems = parentForm.getValues("order_items") || [];
+        const item = currentItems[index];
+
+        console.log('item.product?', item.product)
+        // Guard against exceeding stock
+        const maxQty = item.product?.inventory
+            ? item.product.inventory.quantity - item.product.inventory.reserved_qty
+            : Infinity;
+
+        const clampedQty = Math.min(newQuantity, maxQty);
+
+        const updatedItems = currentItems.map((i, idx) =>
+            idx === index
+                ? {
+                    ...i,
+                    quantity: clampedQty,
+                    total_price: Number(i.price) * clampedQty,
+                }
+                : i
+        );
+
+        parentForm.setValue("order_items", updatedItems, {
+            shouldValidate: true,
+            shouldDirty: true,
+        });
+    };
+
+    const handleAddOrderItem = async (values: DirectOrderItem) => {
         if (!selectedProduct) {
             toast.error('Please select a valid product');
             return;
         }
 
-        // Calculate final prices
-        const finalPrice = Number(selectedProduct.price) || 0;
-        const finalTotalPrice = finalPrice * (values.quantity || 1);
-
-        if (!bookingData?.orders?.id) {
-            throw new Error("Order not found");
-        }
-
-
-        const payload: OrderItem = {
+        const newItem: DirectOrderItem = {
             ...values,
-            order_id: bookingData?.orders?.id,
-            price: finalPrice,
-            total_price: finalTotalPrice,
+            product: selectedProduct,
         };
 
-        try {
-            const result = await createMutation.mutateAsync(orderItemSchema.parse(payload));
+        // Get current order_items from parent form and append
+        const currentItems = parentForm.getValues("order_items") || [];
 
-            // Get current order_items from parent form
-            const currentOrderItems = parentForm.getValues("orders.order_items") || [];
+        // Check if item exists
+        const existingItemIndex = currentItems.findIndex(item => item.product_id === newItem.product_id);
+        if (existingItemIndex !== -1) {
+            const updatedItems = [...currentItems];
+            updatedItems[existingItemIndex].quantity += newItem.quantity;
+            updatedItems[existingItemIndex].total_price += newItem.total_price;
 
-            // Add the new order item with the result data (includes id from backend)
-            const updatedOrderItems = [...currentOrderItems, result];
-
-            // Update parent form
-            parentForm.setValue("orders.order_items", updatedOrderItems, {
+            parentForm.setValue("order_items", updatedItems, {
                 shouldValidate: true,
-                shouldDirty: true
+                shouldDirty: true,
             });
-
-            // Reset the form
-            form.reset(defaultValues);
-            setSelectedOrderItemName("");
-            setSearchQuery("");
-            setSelectedProduct(null);
-
-        } catch (error) {
-            console.error('Error creating order item:', error);
-            toast.error('Failed to add order item');
+        } else {
+            parentForm.setValue("order_items", [...currentItems, newItem], {
+                shouldValidate: true,
+                shouldDirty: true,
+            });
         }
+
+        // Reset local form
+        form.reset(defaultValues);
+        setSelectedOrderItemName("");
+        setSearchQuery("");
+        setSelectedProduct(null);
     };
 
+    const handleDeleteOrderItem = async (productId: number) => {
+        const currentOrderItems = parentForm.getValues("order_items") || [];
+        const updatedOrderItems = currentOrderItems.filter(oi => oi.product_id !== productId);
+
+        parentForm.setValue("order_items", updatedOrderItems, {
+            shouldValidate: true,
+            shouldDirty: true
+        });
+    }
+
     return (
-        <div className="flex flex-col gap-4 my-4">
+        <div className="flex flex-col">
             <Form {...form}>
                 <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-[1fr_90px] gap-2 items-start">
@@ -307,7 +334,7 @@ export const OrderItemForm = ({ bookingData }: OrderItemFormProps) => {
                             <div className="flex flex-1 items-center mt-5">
                                 <Button
                                     type="button"
-                                    onClick={form.handleSubmit(handleSubmit)}
+                                    onClick={form.handleSubmit(handleAddOrderItem)}
                                     className="md:hidden h-[34px] w-full bg-green-600 hover:bg-green-700 text-white"
                                     title="Add Item"
                                 >
@@ -317,7 +344,7 @@ export const OrderItemForm = ({ bookingData }: OrderItemFormProps) => {
 
                                 <Button
                                     type="button"
-                                    onClick={form.handleSubmit(handleSubmit, (errors) => console.log(errors))}
+                                    onClick={form.handleSubmit(handleAddOrderItem, (errors) => console.log(errors))}
                                     size="icon"
                                     className="hidden md:block h-[34px] w-[34px] bg-green-600 hover:bg-green-700 text-white rounded-full float-right"
                                     title="Add Item"
@@ -339,42 +366,57 @@ export const OrderItemForm = ({ bookingData }: OrderItemFormProps) => {
             </Form>
 
             {orderItemsList?.length > 0 && (
-                <Table className="bg-transparent">
-                    <TableHeader>
-                        <TableRow className="border-b border-gray-200">
-                            <TableHead className="text-xs py-0 h-6 text-gray-400">Product</TableHead>
-                            <TableHead className="text-center text-xs py-0 h-6 text-gray-400">Quantity</TableHead>
-                            <TableHead className="text-center text-xs py-0 h-6 text-gray-400">Price</TableHead>
-                            <TableHead className="text-xs py-0 h-6 text-gray-400"></TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {orderItemsList.map((item, index) => (
-                            <TableRow key={item.product?.id || index}>
-                                <TableCell className="text-xs py-1 h-6">{item.product?.name || ""}</TableCell>
-                                <TableCell className="text-right text-xs py-1 h-6 w-5">{item.quantity}</TableCell>
-                                <TableCell className="text-right text-xs py-1 h-6 w-14">{Number(item.total_price).toFixed(2)}</TableCell>
-                                <TableCell className="text-right text-xs p-0 h-6 w-5">
-                                    <ConfirmDeleteDialog
-                                        entityName={`Order Item - ${item.product?.name}`}
-                                        loading={deleteMutation.isPending}
-                                        onConfirm={async () => {
-                                            await deleteMutation.mutateAsync(item.id!);
-
-                                            // Update parent form after delete
-                                            const currentOrderItems = parentForm.getValues("orders.order_items") || [];
-                                            const updatedOrderItems = currentOrderItems.filter(oi => oi.id !== item.id);
-                                            parentForm.setValue("orders.order_items", updatedOrderItems, {
-                                                shouldValidate: true,
-                                                shouldDirty: true
-                                            });
-                                        }}
-                                    />
-                                </TableCell>
+                <div className="border border-gray-200 rounded-md bg-gray-100 mt-4">
+                    <Table className="bg-transparent">
+                        <TableHeader>
+                            <TableRow className="border-b border-gray-200">
+                                <TableHead className="text-xs py-0 h-6 text-gray-400">Product</TableHead>
+                                <TableHead className="text-center text-xs py-0 h-6 text-gray-400">Quantity</TableHead>
+                                <TableHead className="text-center text-xs py-0 h-6 text-gray-400">Price</TableHead>
+                                <TableHead className="text-xs py-0 h-6 text-gray-400"></TableHead>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
+                        </TableHeader>
+                        <TableBody>
+                            {orderItemsList.map((item, index) => (
+                                <TableRow key={item.product?.id || index}>
+                                    <TableCell className="text-xs py-1 ">{item.product?.name || ""}</TableCell>
+                                    <TableCell className="text-right text-xs py-1  w-5">
+                                        <div className="flex items-center gap-1">
+                                            <Button
+                                                type="button"
+                                                onClick={() => handleOrderItemQuantityChange(index, item.quantity - 1)}
+                                                className="w-5 h-5 flex items-center justify-center rounded bg-gray-100 hover:bg-gray-200 text-xs text-black"
+                                            >
+                                                <MinusIcon className="w-4 h-10" />
+                                            </Button>
+                                            <span className="w-6 text-center">{item.quantity}</span>
+                                            <Button
+                                                type="button"
+                                                onClick={() => handleOrderItemQuantityChange(index, item.quantity + 1)}
+                                                className="w-5 h-5 flex items-center justify-center rounded bg-gray-100 hover:bg-gray-200 text-xs text-black"
+                                            >
+                                                <PlusIcon className="w-4 h-10" />
+                                            </Button>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="text-right text-xs py-1  w-14">{Number(item.total_price).toFixed(2)}</TableCell>
+                                    <TableCell className="text-right text-xs p-0  w-5">
+                                        <ConfirmDeleteDialog
+                                            entityName={`Order Item - ${item.product?.name}`}
+                                            onConfirm={() => handleDeleteOrderItem(item.product_id!)}
+                                        />
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+
+                        </TableBody>
+                    </Table>
+                </div>
+            )}
+            {orderItemsList?.length > 0 && (<div className="flex flex-row items-center mt-4">
+                <p className="flex-1 font-bold text-lg text-gray-400">Total Amount:</p>
+                <p className="flex-1 text-right text-4xl">{formatCurrency(grandTotal)}</p>
+            </div>
             )}
         </div>
     );

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
     Dialog,
@@ -25,6 +25,9 @@ interface DashboardDialogProps {
     trigger?: React.ReactNode;
     bookingId?: number;
     roomData?: Partial<Room> | null;
+    defaultOpen?: boolean;
+    defaultTab?: string;
+    onOpenChange?: (open: boolean) => void;
 }
 
 export const DashboardDialog = ({
@@ -32,8 +35,11 @@ export const DashboardDialog = ({
     trigger,
     bookingId = 0,
     roomData,
+    defaultOpen = false,
+    defaultTab = "",
+    onOpenChange,
 }: DashboardDialogProps) => {
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(defaultOpen);
     const [frozenMode, setFrozenMode] = useState(mode);
 
     // Only enable query when dialog is open AND we have a valid bookingId
@@ -48,9 +54,17 @@ export const DashboardDialog = ({
         }
     );
 
+    useEffect(() => {
+        if (defaultOpen) {
+            setOpen(true);
+            setFrozenMode(mode);
+        }
+    }, [defaultOpen]);
+
     const handleOpenChange = (nextOpen: boolean) => {
         if (nextOpen) setFrozenMode(mode);
         setOpen(nextOpen);
+        onOpenChange?.(nextOpen);  // ← also add this so parent gets notified
     };
 
     const isLoadingData = (isLoading || isFetching) && frozenMode === "edit";
@@ -93,7 +107,7 @@ export const DashboardDialog = ({
                         roomData={roomData}
                     />
                 ) : (
-                    <DashboardContext.Provider value={{ open, setOpen, roomData: roomData as Room }}>
+                    <DashboardContext.Provider value={{ open, setOpen, roomData: roomData as Room, defaultTab }}>
                         <CheckOutForm
                             key="check-out"
                             open={open}

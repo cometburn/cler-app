@@ -17,7 +17,7 @@ export const fetchMe = (): Promise<User | null> => {
  * Set the default hotel for the current user
  */
 export const setDefaultHotelApi = (hotelId: number): Promise<void> => {
-    return apiFetch<void>(USER_ENDPOINTS.SET_DEFAULT_HOTEL, {
+    return apiFetch<void>(`/users/hotel/${hotelId}/switch`, {
         method: "POST",
         body: JSON.stringify({ hotel_id: hotelId }),
     });

@@ -5,4 +5,5 @@ export const DashboardContext = createContext<{
     open: boolean;
     setOpen: (open: boolean) => void,
     roomData: Room;
+    defaultTab?: string;
 } | null>(null);

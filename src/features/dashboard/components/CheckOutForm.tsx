@@ -21,6 +21,8 @@ import { OrderItemForm } from "@/features/orderItem/components/OrderItemForm";
 import { cn } from "@/lib/utils";
 import { TransferBookingDialog } from "./TransferBookingDialog";
 import { formatCurrency } from "@/helpers/string.helper";
+import { DashboardContext } from "../context/dashboard.context";
+import { useContext } from "react";
 
 interface CheckOutFormProps {
     open: boolean;
@@ -30,6 +32,9 @@ interface CheckOutFormProps {
 }
 
 export const CheckOutForm = ({ open, setOpen, initialData, roomData }: CheckOutFormProps) => {
+    const context = useContext(DashboardContext);
+    const defaultTab = context?.defaultTab ?? "";
+
     const {
         form,
         roomRates,
@@ -129,7 +134,12 @@ export const CheckOutForm = ({ open, setOpen, initialData, roomData }: CheckOutF
                             />
 
                             {/* Tabs */}
-                            <Tabs defaultValue={hasBookingCharges ? "charges" : "addons"} className="gap-0 py-4 px-4 rounded-md border border-gray-200 bg-gray-100 mt-5">
+                            <Tabs
+                                defaultValue={
+                                    defaultTab ? defaultTab : hasBookingCharges ? "charges" : "addons"
+                                }
+                                className="gap-0 py-4 px-4 rounded-md border border-gray-200 bg-gray-100 mt-5"
+                            >
                                 <TabsList
                                     variant="line"
                                     className={cn("px-0 grid grid-cols-1 md:grid-cols-3 w-full h-auto [&]:h-auto", !hasBookingCharges && "md:grid-cols-2")}
@@ -138,7 +148,7 @@ export const CheckOutForm = ({ open, setOpen, initialData, roomData }: CheckOutF
                                         <TabsTrigger value="charges" className="cursor-pointer">Transfer Charges</TabsTrigger>
                                     }
                                     <TabsTrigger value="addons" className="cursor-pointer">Room Add-ons</TabsTrigger>
-                                    <TabsTrigger value="order" className="cursor-pointer">Orders</TabsTrigger>
+                                    <TabsTrigger value="orders" className="cursor-pointer">Orders</TabsTrigger>
                                 </TabsList>
 
                                 {hasBookingCharges &&
@@ -168,7 +178,7 @@ export const CheckOutForm = ({ open, setOpen, initialData, roomData }: CheckOutF
                                 <TabsContent value="addons" className="py-2 mt-18 md:mt-0">
                                     <BookingAddonsForm bookingData={initialData} />
                                 </TabsContent>
-                                <TabsContent value="order" className="py-2 mt-18 md:mt-0">
+                                <TabsContent value="orders" className="py-2 mt-18 md:mt-0">
                                     <OrderItemForm bookingData={initialData} />
                                 </TabsContent>
                             </Tabs>
@@ -195,27 +205,6 @@ export const CheckOutForm = ({ open, setOpen, initialData, roomData }: CheckOutF
                                     <p className="flex-1 font-bold text-lg">Total Amount:</p>
                                     <p className="flex-1 text-right text-4xl">{formatCurrency(total)}</p>
                                 </div>
-                                {/* <FormField
-                                    control={form.control}
-                                    name="total_price"
-                                    render={({ field }) => (
-                                        <FormItem className="flex flex-row items-center my-4">
-                                            <FormLabel className="flex-1 font-bold text-lg">Total Amount:</FormLabel>
-                                            <FormControl className="flex-1">
-                                                <Input
-                                                    type="number"
-                                                    value={form.watch("total_price") ? String(form.watch("total_price")) : ""}
-                                                    onChange={(e) => {
-                                                        const val = Number(e.target.value);
-                                                        field.onChange(isNaN(val) ? 0 : val);
-                                                    }}
-                                                    className="no-arrows px-0 text-right !text-4xl border-none focus:border-none focus:outline-none focus:ring-0 active:border-none active:outline-none active:ring-0 focus-visible:border-none focus-visible:outline-none focus-visible:ring-0"
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                /> */}
                             </div>
                             <div>
                                 {/* Payment & Note */}

@@ -18,14 +18,13 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@radix-ui/react-collapsible";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { MENU_ITEMS, SETTING_ITEMS, USER_SETTING_ITEMS } from "@/constants/system";
 import type { SidebarMenuItem as SidebarMenuItemType } from "@/shared/types/ui.types";
 import { useMe } from "@/features/auth/hooks/useMe";
 import { useLogout } from "@/features/auth/hooks/useLogout";
-import { useEffect, useState } from "react";
 
-function SidebarLink({ isSubMenuItem, item, urlLink, setUrlLink }: { isSubMenuItem?: boolean, item: SidebarMenuItemType, urlLink: string, setUrlLink: (url: string) => void }) {
+function SidebarLink({ isSubMenuItem, item, urlLink }: { isSubMenuItem?: boolean, item: SidebarMenuItemType, urlLink: string }) {
   return (
     <Link
       to={item.url}
@@ -35,7 +34,6 @@ function SidebarLink({ isSubMenuItem, item, urlLink, setUrlLink }: { isSubMenuIt
           urlLink === item.url && "bg-gray-700"
         ].filter(Boolean).join(" ")
       }
-      onClick={() => setUrlLink(item.url)}
     >
       <span>{item.title}</span>
     </Link>
@@ -43,16 +41,14 @@ function SidebarLink({ isSubMenuItem, item, urlLink, setUrlLink }: { isSubMenuIt
 }
 
 export const AppSidebar = () => {
-  const [urlLink, setUrlLink] = useState("");
+  const location = useLocation();
   const logout = useLogout();
   const { data: user } = useMe();
 
+  const urlLink = location.pathname
+
   const isAdmin = user?.user_type_id === 2;
   const navigate = useNavigate();
-
-  useEffect(() => {
-    setUrlLink(window.location.hash.split("#")[1]);
-  }, []);
 
   const handleLogout = () => {
     logout();
@@ -79,7 +75,7 @@ export const AppSidebar = () => {
                       <Link
                         to={item.url}
                         className={urlLink === item.url ? "bg-gray-700" : ""}
-                        onClick={() => setUrlLink(item.url)}
+
                       >
                         <item.icon />
                         <span>{item.title}</span>
@@ -105,7 +101,7 @@ export const AppSidebar = () => {
                           {SETTING_ITEMS.map((item) => (
                             <SidebarMenuItem key={item.title} className="">
                               <SidebarMenuButton asChild className="py-1">
-                                <SidebarLink isSubMenuItem={true} item={item} urlLink={urlLink} setUrlLink={setUrlLink} />
+                                <SidebarLink isSubMenuItem={true} item={item} urlLink={urlLink} />
                               </SidebarMenuButton>
                             </SidebarMenuItem>
                           ))}
@@ -113,7 +109,7 @@ export const AppSidebar = () => {
                           {USER_SETTING_ITEMS.map((item) => (
                             <SidebarMenuItem key={item.title} className="">
                               <SidebarMenuButton asChild className="py-1">
-                                <SidebarLink isSubMenuItem={true} item={item} urlLink={urlLink} setUrlLink={setUrlLink} />
+                                <SidebarLink isSubMenuItem={true} item={item} urlLink={urlLink} />
                               </SidebarMenuButton>
                             </SidebarMenuItem>
                           ))}

@@ -18,7 +18,7 @@ interface BookingChargesFormProps {
     transferRoomId?: number;
 }
 
-export const BookingChargesForm = ({ bookingCharges, setBookingCharges, transferRoomId }: BookingChargesFormProps) => {
+export const BookingChargesForm = ({ bookingCharges, setBookingCharges }: BookingChargesFormProps) => {
     const dashboardContext = useContext(DashboardContext);
     const form = useForm<BookingCharge>({
         resolver: zodResolver(bookingChargeSchema),

@@ -1,11 +1,9 @@
-import { useState, useEffect, Dispatch, SetStateAction } from "react";
+import { useEffect, Dispatch, SetStateAction } from "react";
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog";
 
 import {
@@ -99,7 +97,7 @@ export const ProductMovementDetail = ({
                     </Collapsible>
 
                 }
-                <div className="grid grid-cols-1 p-4 gap-4 border border-gray-300 rounded-md bg-gray-100">
+                <div className="grid grid-cols-1  gap-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="flex flex-col gap-0">
                             <div className="text-xs text-gray-400">Product</div>
@@ -107,20 +105,27 @@ export const ProductMovementDetail = ({
                         </div>
 
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-3 gap-4">
                         <div className="flex flex-col gap-0">
                             <div className="text-xs text-gray-400">Quantity</div>
                             <div className="text-sm">{initialData?.quantity}</div>
                         </div>
                         <div className="flex flex-col gap-0">
-                            <div className="text-xs text-gray-400">Unit Cost</div>
+                            <div className="text-xs text-gray-400">Price</div>
                             {
                                 initialData?.unit_cost &&
                                 <div className="text-sm">{formatCurrency(initialData?.unit_cost as number, { currencySymbol: "" })}</div>
                             }
                         </div>
+                        <div className="flex flex-col gap-0">
+                            <div className="text-xs text-gray-400">Total Price</div>
+                            {
+                                initialData?.unit_cost && initialData?.quantity &&
+                                <div className="text-sm">{formatCurrency((initialData?.unit_cost * initialData?.quantity) as number, { currencySymbol: "" })}</div>
+                            }
+                        </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-2">
                         <div className="flex flex-col gap-0">
                             <div className="text-xs text-gray-400">Date</div>
                             {initialData?.orderItem?.created_at ?

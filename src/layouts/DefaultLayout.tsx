@@ -1,5 +1,5 @@
 import { Outlet, useLocation } from "react-router-dom";
-import { useEffect, useState, useReducer } from "react";
+import { useEffect, useState } from "react";
 
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/layouts/AppSidebar";        // ← fixed naming (AppSideBar → AppSidebar)
