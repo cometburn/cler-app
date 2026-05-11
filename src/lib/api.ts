@@ -103,7 +103,7 @@ export async function apiFetch<T = unknown>(
                 });
             } catch (err) {
                 processQueue(err);
-                localStorage.removeItem("token");
+                // localStorage.removeItem("token");
                 toast.error("Your session has expired. Please log in again.");
 
                 // Prevent redirect loop
