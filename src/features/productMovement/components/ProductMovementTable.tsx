@@ -174,7 +174,7 @@ export const ProductMovementTable = () => {
                 <TableBody>
                     {isLoading ? (
                         <TableRow>
-                            <TableCell colSpan={5} className="text-center">
+                            <TableCell colSpan={6} className="text-center">
                                 <LoaderCircle className="w-6 h-6 animate-spin mx-auto" />
                             </TableCell>
                         </TableRow>

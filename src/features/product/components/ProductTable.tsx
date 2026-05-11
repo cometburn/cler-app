@@ -146,7 +146,7 @@ export const ProductTable = () => {
                 <TableBody>
                     {isLoading ? (
                         <TableRow>
-                            <TableCell colSpan={3} className="text-center">
+                            <TableCell colSpan={4} className="text-center">
                                 <LoaderCircle className="w-6 h-6 animate-spin mx-auto" />
                             </TableCell>
                         </TableRow>
