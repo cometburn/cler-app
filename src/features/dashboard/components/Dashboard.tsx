@@ -20,7 +20,6 @@ export const Dashboard = () => {
 
   const { data: dashboardRooms, isLoading: roomsLoading } = useDashboard();
 
-  // const rooms = dashboardRooms?.data ?? [];
   const [rooms, setRooms] = useState<DashboardRoom[]>([]);
   const [_socket, setSocket] = useState<Socket | null>(null);
   const [_now, setNow] = useState(Date.now());
@@ -35,13 +34,8 @@ export const Dashboard = () => {
   useEffect(() => {
     if (dashboardRooms?.data) {
       setRooms(dashboardRooms.data);
-      console.log('rooms', rooms)
     }
-  }, [dashboardRooms?.data, rooms]);
-
-  useEffect(() => {
-    console.log('roomIdParam', roomIdParam)
-  }, [roomIdParam]);
+  }, [dashboardRooms?.data]);
 
   useEffect(() => {
     const socketInstance = createSocket();
@@ -53,31 +47,28 @@ export const Dashboard = () => {
 
     socketInstance.on('check_in', (data) => {
       setRooms((prev) =>
-        prev.map((room) =>
-          room.id === data.room_id ? { ...room, bookings: [data] } : room
-        )
+        prev.map((room) => room.id === data.room_id ? { ...room, bookings: [data] } : room)
       );
 
       // Trigger highlight
-      setHighlightedRooms((prev) => ({ ...prev, [data.room_id]: 'checkin' }));   // or 'checkout'
-      setTimeout(() => {
+      setHighlightedRooms((prev) => ({ ...prev, [data.room_id]: 'checkin' }));
 
+      setTimeout(() => {
         setHighlightedRooms((prev) => {
           const next = { ...prev };
           delete next[data.room_id];
           return next;
         });
       }, 3000);
+
     });
 
     socketInstance.on('check_out', (data) => {
       setRooms((prev) =>
-        prev.map((room) =>
-          room.id === data.room_id ? { ...room, bookings: [] } : room
-        )
+        prev.map((room) => room.id === data.room_id ? { ...room, bookings: [] } : room)
       );
 
-      setHighlightedRooms((prev) => ({ ...prev, [data.room_id]: 'checkout' }));   // or 'checkout'
+      setHighlightedRooms((prev) => ({ ...prev, [data.room_id]: 'checkout' }));
       setTimeout(() => {
         setHighlightedRooms((prev) => {
           const next = { ...prev };
@@ -159,10 +150,7 @@ export const Dashboard = () => {
                 )}
 
                 <span
-                  className={`
-                    ${hasBooking ? 'text-red-600' : 'text-green-600'} text-xl font-semibold
-                    ${highlightClass}
-                  `}
+                  className={`${hasBooking ? 'text-red-600' : 'text-green-600'} text-xl font-semibold ${highlightClass}`}
                 >
                   {room.name}
                 </span>
