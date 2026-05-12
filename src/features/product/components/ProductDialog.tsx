@@ -318,9 +318,8 @@ export const ProductDialog = ({
                         <h4 className="text-sm font-semibold mb-2">History</h4>
                         <ScrollArea className="h-[405px] overflow-x-hidden">
                             <div className="flex flex-col gap-1">
-
                                 {initialData.product_history?.map((history) => (
-                                    <p className="text-xs">Changed <span className="font-semibold text-blue-500">{removeUnderscore(history.field)}</span> {history.old_value ? <span className="font-semibold">{history.old_value}</span> : ""} <span>to</span> <span className="font-semibold">{history.new_value}</span> on {formatDate(history.created_at, "MM/DD/YYYY hh:mm A")} by <span className="font-semibold capitalize text-blue-500">{`${history.user.first_name} ${history.user.last_name}`}</span></p>
+                                    <p key={history.id} className="text-xs">Changed <span className="font-semibold text-blue-500">{removeUnderscore(history.field)}</span> {history.old_value ? <span className="font-semibold">{history.old_value}</span> : ""} <span>to</span> <span className="font-semibold">{history.new_value}</span> on {formatDate(history.created_at, "MM/DD/YYYY hh:mm A")} by <span className="font-semibold capitalize text-blue-500">{`${history.user.first_name} ${history.user.last_name}`}</span></p>
                                 ))}
                             </div>
                         </ScrollArea>
