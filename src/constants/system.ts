@@ -1,7 +1,9 @@
 import {
-  BookImageIcon,
+  BedDoubleIcon,
   ConciergeBellIcon,
+  CalendarCheckIcon,
   FileSpreadsheetIcon,
+  FileBoxIcon,
   Key,
   LayoutDashboardIcon,
   Package,
@@ -17,7 +19,12 @@ export const MENU_ITEMS = [
   {
     title: "Bookings",
     url: "/bookings",
-    icon: BookImageIcon,
+    icon: BedDoubleIcon,
+  },
+  {
+    title: "Reservations",
+    url: "/reservations",
+    icon: CalendarCheckIcon,
   },
   {
     title: "Rooms",
@@ -37,7 +44,7 @@ export const MENU_ITEMS = [
   {
     title: "Product Movements",
     url: "/product-movements",
-    icon: Package,
+    icon: FileBoxIcon,
   },
   {
     title: "Inventory",
