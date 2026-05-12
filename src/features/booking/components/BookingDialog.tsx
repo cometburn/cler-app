@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { LoaderCircle, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -80,7 +80,8 @@ export const BookingDialog = ({
                         </DialogTitle>
                     </DialogHeader>
 
-                    {isLoading && <p className="text-sm text-gray-400">Loading...</p>}
+                    {isLoading && <div className="flex items-center justify-center"><LoaderCircle className="w-6 h-6 animate-spin" /></div>}
+
                     {bookingData && (
                         <>
                             <div className="grid grid-cols-2 gap-4">
@@ -102,6 +103,7 @@ export const BookingDialog = ({
 
                             {/* Tabs */}
                             {(hasBookingCharges || hasBookingAddons || hasBookingOrders) && <Tabs
+                                defaultValue={hasBookingCharges ? "charges" : hasBookingAddons ? "addons" : "orders"}
                                 className="gap-0 py-4 px-4 rounded-md border border-gray-200 bg-gray-100"
                             >
                                 <TabsList
@@ -109,10 +111,10 @@ export const BookingDialog = ({
                                     className={cn("px-0 grid grid-cols-1 md:grid-cols-3 w-full h-auto [&]:h-auto", !hasBookingCharges && "md:grid-cols-2")}
                                 >
                                     {hasBookingCharges &&
-                                        <TabsTrigger value="charges" className="cursor-pointer">Transfer Charges</TabsTrigger>
+                                        <TabsTrigger value="charges" className="cursor-pointer outline-none">Transfer Charges</TabsTrigger>
                                     }
-                                    {hasBookingAddons && <TabsTrigger value="addons" className="cursor-pointer">Room Add-ons</TabsTrigger>}
-                                    {hasBookingOrders && <TabsTrigger value="orders" className="cursor-pointer">Orders</TabsTrigger>}
+                                    {hasBookingAddons && <TabsTrigger value="addons" className="cursor-pointer outline-none">Room Add-ons</TabsTrigger>}
+                                    {hasBookingOrders && <TabsTrigger value="orders" className="cursor-pointer outline-none">Orders</TabsTrigger>}
                                 </TabsList>
 
                                 {hasBookingCharges &&
@@ -171,7 +173,6 @@ export const BookingDialog = ({
                                                     <TableRow className="border-b border-gray-200">
                                                         <TableHead className="text-xs py-0 h-6 text-gray-400 w-full">Name</TableHead>
                                                         <TableHead className="text-center text-xs py-0 h-6 text-gray-400 w-20">Quantity</TableHead>
-                                                        <TableHead className="text-center text-xs py-0 h-6 text-gray-400 w-20">Unit Price</TableHead>
                                                         <TableHead className="text-center text-xs py-0 h-6 text-gray-400 w-20">Total Price</TableHead>
                                                     </TableRow>
                                                 </TableHeader>
@@ -179,10 +180,9 @@ export const BookingDialog = ({
                                                     {bookingData?.orders?.order_items?.map((orderItem) => (
                                                         <TableRow key={orderItem.id}>
                                                             <TableCell className="text-xs py-1 h-6 max-w-0 overflow-hidden text-ellipsis whitespace-nowrap">
-                                                                {orderItem.product?.name || ""} x {orderItem.quantity}
+                                                                {orderItem.product?.name || ""}
                                                             </TableCell>
                                                             <TableCell className="text-right text-xs py-1 h-6">{orderItem.quantity}</TableCell>
-                                                            <TableCell className="text-right text-xs py-1 h-6">{formatCurrency(Number(orderItem.price), { currencySymbol: "" })}</TableCell>
                                                             <TableCell className="text-right text-xs py-1 h-6">{formatCurrency(Number(orderItem.total_price), { currencySymbol: "" })}</TableCell>
                                                         </TableRow>
                                                     ))}
@@ -209,18 +209,12 @@ export const BookingDialog = ({
                             />
 
                             {/* Total Amount */}
-                            <div className="flex flex-row items-center my-4">
+                            <div className="flex flex-row items-center mt-4">
                                 <p className="flex-1 font-bold text-lg">Total Amount:</p>
                                 <p className="flex-1 text-right text-4xl">{formatCurrency(bookingData.total_price)}</p>
                             </div>
                         </>
                     )}
-
-                    <div className="flex justify-end space-x-2 pt-2">
-                        <Button variant="outline" className="flex-1 text-gray-500" onClick={() => setOpen(false)}>
-                            Close
-                        </Button>
-                    </div>
                 </div>
             </DialogContent>
         </Dialog >
