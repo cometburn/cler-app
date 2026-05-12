@@ -1,15 +1,16 @@
 import { useMutation, useQuery, useQueryClient, UseQueryOptions } from "@tanstack/react-query";
 import {
+    fetchBookings,
+    fetchBookingById,
     createBooking,
     updateBooking,
-    fetchBookingById,
     cancelBooking,
     transferBooking
 } from "../api/booking.api";
 import { fetchRoomRatesByRoomType } from "@/features/roomRate/api/roomRate.api";
 
 import { RoomRate } from "@/features/roomRate/types/roomRate.types";
-import { Booking, CancelBooking, CreateBooking, TransferBooking, UpdateBooking } from "../types/booking.types";
+import { Booking, BookingResponse, CancelBooking, CreateBooking, TransferBooking, UpdateBooking } from "../types/booking.types";
 import { ApiError } from "@/shared/types/apiError.types";
 import { toast } from "sonner";
 
@@ -30,6 +31,20 @@ export function useRoomRatesByRoomType(id: number) {
 }
 
 /**
+ * Fetch bookings
+ * @param page 
+ * @param limit 
+ * @returns 
+ */
+export function useBookings(page: number, limit: number) {
+    return useQuery<BookingResponse, Error>({
+        queryKey: [...BOOKINGS_QUERY_KEY, page, limit],
+        queryFn: () => fetchBookings(page, limit),
+        refetchOnMount: "always",
+    });
+}
+
+/**
  * Fetch booking by id
  * @param bookingId 
  * @returns 
@@ -41,8 +56,8 @@ export function useBookingById(
     return useQuery<Booking, Error>({
         queryKey: [...BOOKINGS_QUERY_KEY, bookingId],
         queryFn: () => fetchBookingById(bookingId),
-        refetchOnMount: 'always', // Always refetch when component mounts
-        staleTime: 0, // Data is immediately stale
+        refetchOnMount: 'always',
+        staleTime: 0,
         ...options,
     });
 }

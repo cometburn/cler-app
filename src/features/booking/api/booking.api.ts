@@ -1,5 +1,19 @@
 import { apiFetch } from "@/lib/api";
-import { Booking, CancelBooking, CreateBooking, TransferBooking, UpdateBooking } from "../types/booking.types";
+import { Booking, BookingResponse, CancelBooking, CreateBooking, TransferBooking, UpdateBooking } from "../types/booking.types";
+
+/**
+ * Fetch bookings
+ * @param page 
+ * @param limit 
+ * @returns Promise<BookingResponse>
+ */
+export const fetchBookings = async (page = 1, limit = 10, sort: string = "status:desc"): Promise<BookingResponse> => {
+    const query = new URLSearchParams({ page: String(page), limit: String(limit), sort });
+    return await apiFetch<BookingResponse>(`/bookings?${query.toString()}`, {
+        method: 'GET',
+    });
+}
+
 
 
 /**

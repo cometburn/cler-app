@@ -170,3 +170,12 @@ export type Booking = {
 // ==========================================
 
 export const bookingSchema = updateBookingSchema;
+
+export interface BookingResponse {
+    data: Booking[];
+    meta: {
+        total: number;
+        page: number;
+        limit: number;
+    };
+}
