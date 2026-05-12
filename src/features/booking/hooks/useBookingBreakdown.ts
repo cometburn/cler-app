@@ -11,7 +11,6 @@ export const useBookingBreakdown = ({ initialData }: UseCheckOutFormProps) => {
     let billedHours = 0;
     let isOverdue = false;
     let minutes = 0
-    let overstayBill = 0
 
     // Check for overstay
     if (updatedDate && endDate) {
@@ -22,11 +21,9 @@ export const useBookingBreakdown = ({ initialData }: UseCheckOutFormProps) => {
         minutes = Math.max(0, Math.floor(diffMs / 60000));
     }
 
-
     if (minutes > 0) {
         overstayMinutes = minutes;
         billedHours = Math.floor(overstayMinutes / 60) + (overstayMinutes % 60 >= 15 ? 1 : 0);
-        overstayBill = (billedHours + overstayMinutes) * (initialData?.room_rate?.overstay_rate ?? 0);
     }
 
     isOverdue = minutes > 0;
