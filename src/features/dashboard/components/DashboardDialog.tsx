@@ -64,7 +64,7 @@ export const DashboardDialog = ({
     const handleOpenChange = (nextOpen: boolean) => {
         if (nextOpen) setFrozenMode(mode);
         setOpen(nextOpen);
-        onOpenChange?.(nextOpen);  // ← also add this so parent gets notified
+        onOpenChange?.(nextOpen);
     };
 
     const isLoadingData = (isLoading || isFetching) && frozenMode === "edit";
