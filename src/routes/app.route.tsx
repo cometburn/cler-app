@@ -12,6 +12,7 @@ import { InventoryRoutes } from "./inventory.route";
 import { ProductRoutes } from "./product.route";
 import { ProductMovementRoutes } from "./productMovement.route";
 import { OrderRoutes } from "./order.route";
+import { BookingRoutes } from "./booking.route";
 
 export const router = createHashRouter([
   {
@@ -27,6 +28,10 @@ export const router = createHashRouter([
           {
             path: "dashboard/*",
             element: <DashboardRoutes />,
+          },
+          {
+            path: "bookings/*",
+            element: <BookingRoutes />,
           },
           {
             path: "rooms/*",
