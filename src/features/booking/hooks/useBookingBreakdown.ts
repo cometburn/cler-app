@@ -7,7 +7,10 @@ interface UseCheckOutFormProps {
 }
 
 export const useBookingBreakdown = ({ initialData }: UseCheckOutFormProps) => {
-    const { overstayMinutes, billedHours, isOverdue } = useOverstay(initialData?.end_datetime, initialData?.updated_at);
+    const endDate = initialData?.end_datetime
+    const updatedDate = initialData?.updated_at
+
+    const { overstayMinutes, billedHours, isOverdue } = useOverstay(endDate, updatedDate);
 
     const extraPerson = initialData?.extra_person ?? 0;
 
