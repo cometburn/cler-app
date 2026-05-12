@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
-export const useOverstay = (endDatetime?: string | Date | null) => {
+export const useOverstay = (endDatetime?: string | Date | null, finalDateTime?: Date | null) => {
     const [overstayMinutes, setOverstayMinutes] = useState(0);
 
     useEffect(() => {
@@ -12,7 +12,7 @@ export const useOverstay = (endDatetime?: string | Date | null) => {
         const end = new Date(endDatetime);
 
         const calculate = () => {
-            const now = new Date();
+            const now = finalDateTime ? new Date(finalDateTime) : new Date();
             const diffMs = now.getTime() - end.getTime();
             const minutes = Math.max(0, Math.floor(diffMs / 60000));
             setOverstayMinutes(minutes);
