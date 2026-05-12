@@ -64,11 +64,6 @@ export const BookingBreakdown = ({
                     <span>{formatCurrency(ordersTotal, { currencySymbol: "" })}</span>
                 </div>
             )}
-
-            {/* <div className="flex justify-between font-semibold border-t border-gray-200 pt-2">
-                <span>Total</span>
-                <span>{total.toFixed(2)}</span>
-            </div> */}
         </div>
     );
 };
