@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { Cell, flexRender, getCoreRowModel, Row, useReactTable } from "@tanstack/react-table";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
