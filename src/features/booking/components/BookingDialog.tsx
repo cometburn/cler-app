@@ -1,13 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
@@ -18,11 +17,8 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@
 import { useBookingById } from "../hooks/useBookings";
 import { formatDate } from "@/helpers/date.helper";
 import { BookingBreakdown } from "@/features/dashboard/components/BookingBreakdown";
-import { useCheckOutForm } from "@/features/dashboard/hooks/useCheckoutForm";
 import { formatCurrency } from "@/helpers/string.helper";
 import { useBookingBreakdown } from "../hooks/useBookingBreakdown";
-import { BookingAddonsForm } from "@/features/bookingAddon/components/BookingAddonsForm";
-import { OrderItemForm } from "@/features/orderItem/components/OrderItemForm";
 import { cn } from "@/lib/utils";
 
 interface BookingDialogProps {
@@ -34,7 +30,6 @@ interface BookingDialogProps {
 }
 
 export const BookingDialog = ({
-    mode = "add",
     trigger,
     bookingId,
     open: controlledOpen,
@@ -50,8 +45,6 @@ export const BookingDialog = ({
     const { data: bookingData, isLoading } = useBookingById(bookingId, {
         enabled: !!bookingId && open,
     });
-
-    const derivedRoomData = useMemo(() => bookingData?.room ?? null, [bookingData?.room]);
 
     const {
         overstayMinutes,

@@ -73,7 +73,7 @@ export const BookingTable = () => {
                         <Button
                             variant="ghost"
                             className="text-gray-400 hover:text-gray-400 cursor-pointer float-right size-7"
-                            onClick={(e) => {
+                            onClick={() => {
                                 handleBookingClick(row.original);
                             }}
                         >
