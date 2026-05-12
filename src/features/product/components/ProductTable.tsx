@@ -158,7 +158,7 @@ export const ProductTable = () => {
                         ))
                     ) : (
                         <TableRow>
-                            <TableCell colSpan={3} className="text-center text-xs italic text-gray-400">
+                            <TableCell colSpan={4} className="text-center text-xs italic text-gray-400">
                                 No record
                             </TableCell>
                         </TableRow>
