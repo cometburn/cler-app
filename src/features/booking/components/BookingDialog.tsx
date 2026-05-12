@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { LoaderCircle, Plus } from "lucide-react";
+import { Loader, Plus } from "lucide-react";
 
 import {
     Dialog,
@@ -79,7 +79,9 @@ export const BookingDialog = ({
                         </DialogTitle>
                     </DialogHeader>
 
-                    {isLoading && <div className="flex items-center justify-center"><LoaderCircle className="w-6 h-6 animate-spin" /></div>}
+                    {isLoading && <div className="flex items-center justify-center py-8 min-h-[300px]">
+                        <Loader className="animate-spin" />
+                    </div>}
 
                     {bookingData && (
                         <>
